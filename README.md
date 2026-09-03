@@ -65,6 +65,6 @@ See [cmakeit.bat](./cmakeit.bat) for convenience script and various toolchain ex
 
 *Thank you to the entire Xbox 360 homebrew and scene community for keeping the platform alive for over a decade!*
 
-June 2026. Welcome to my nostalgia corner! Signing off...
+Sept 2026. Welcome to my nostalgia corner! Signing off...
 
 _[cOz]_
