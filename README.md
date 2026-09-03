@@ -22,7 +22,7 @@ This project is a composite work. The custom logic, reverse-engineered structure
 
 To the extent possible under law, the author has dedicated all copyright and related and neighboring rights to this software to the public domain worldwide. This software is distributed without any warranty.
 
-For full legal text, see [LICENSE.txt](LICENSE.txt) ro [Open Source Initiative](https://opensource.org/license/mit).
+For full legal text, see [LICENSE](LICENSE) or [Open Source Initiative](https://opensource.org/license/mit).
 
 ### 2. Third-Party Cryptographic Libraries
 
