@@ -1,0 +1,579 @@
+//--------------------------------------
+//--- 010 Editor v6.0 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+BigEndian();
+BitfieldLeftToRight();
+typedef uchar u8, BYTE;
+typedef uint16 u16, SHORT;
+typedef uint32 u32, DWORD, PVOID;
+typedef uint64 u64, QWORD;
+
+#define printf Printf // yeah this can be annoying like that...
+#define fseek FSeek
+  
+// typedef enum _XCONTENT_SIGNATURE_TYPE {
+	// CONSOLE_SIGNED = 0x434F4E20,
+	// LIVE_SIGNED    = 0x4C495645,
+	// PIRS_SIGNED    = 0x50495253,
+// } XCONTENT_SIGNATURE_TYPE;
+
+typedef struct _HV_IMAGE_INFO {
+	BYTE Signature[0x100]; // 0x0 sz:0x100
+	DWORD InfoSize; // 0x100 sz:0x4
+	DWORD ImageFlags; // 0x104 sz:0x4
+	DWORD LoadAddress; // 0x108 sz:0x4
+	BYTE ImageHash[0x14]; // 0x10C sz:0x14
+	DWORD ImportTableCount; // 0x120 sz:0x4
+	BYTE ImportDigest[0x14]; // 0x124 sz:0x14
+	BYTE MediaID[0x10]; // 0x138 sz:0x10
+	BYTE ImageKey[0x10]; // 0x148 sz:0x10
+	DWORD ExportTableAddress; // 0x158 sz:0x4
+	BYTE HeaderHash[0x14]; // 0x15C sz:0x14
+	DWORD GameRegion; // 0x170 sz:0x4
+} HV_IMAGE_INFO; // size 372
+
+#define XEX_SECURITY_PAGE_ENCRYPT       0x00000008 // 1000
+#define XEX_SECURITY_PAGE_PROTECT       0x00000004 // 0100
+#define XEX_SECURITY_PAGE_NOEXECUTE     0x00000002 // 0010
+#define XEX_SECURITY_PAGE_NOWRITE       0x00000001 // 0001
+
+typedef struct _PAGE_DESCIPTION {
+	DWORD Size : 28;
+	DWORD Encrypt : 1;
+	DWORD Protect : 1;
+	DWORD NoExecute : 1;
+	DWORD NoWrite : 1;
+} PAGE_DESCIPTION;
+
+typedef struct _HV_PAGE_INFO { 
+	PAGE_DESCIPTION PageDescription; // 0x0 sz:0x4
+	BYTE DataDigest[0x14]; // 0x4 sz:0x14
+} HV_PAGE_INFO; // size 24
+
+typedef struct _XEX_SECURITY_INFO {
+	DWORD Size; // 0x0 sz:0x4
+	DWORD ImageSize; // 0x4 sz:0x4
+	HV_IMAGE_INFO ImageInfo; // 0x8 sz:0x174
+	DWORD AllowedMediaTypes; // 0x17C sz:0x4
+	DWORD PageDescriptorCount; // 0x180 sz:0x4
+	HV_PAGE_INFO PageInfo[PageDescriptorCount];
+} XEX_SECURITY_INFO; // size 388
+
+typedef struct _XEX_DIR_ENT {
+    DWORD type;
+    DWORD info;
+} XEX_DIR_ENT;
+
+// show xex header module flags info
+#define XEX_MODULE_FLAG_TITLE_PROCESS   0x0001
+#define XEX_MODULE_FLAG_TITLE_IMPORTS   0x0002
+#define XEX_MODULE_FLAG_DEBUGGER        0x0004
+#define XEX_MODULE_FLAG_DLL             0x0008
+#define XEX_MODULE_FLAG_PATCH           0x0010
+#define XEX_MODULE_FLAG_PATCH_FULL      0x0020
+#define XEX_MODULE_FLAG_PATCH_DELTA     0x0040
+#define XEX_MODULE_FLAG_USER_MODE		0x0080
+
+void showModuleFlagInfo(DWORD flags)
+{
+	Printf("Module Flags: 0x%x\n", flags);
+	if(flags&XEX_MODULE_FLAG_TITLE_PROCESS)
+		Printf("    Title process\n");
+	if(flags&XEX_MODULE_FLAG_TITLE_IMPORTS)
+		Printf("    Has title imports\n");
+	if(flags&XEX_MODULE_FLAG_DEBUGGER)
+		Printf("    Debugger\n");
+	if(flags&XEX_MODULE_FLAG_DLL)
+		Printf("    DLL\n");
+	if(flags&XEX_MODULE_FLAG_PATCH)
+		Printf("    Patch\n");
+	if(flags&XEX_MODULE_FLAG_PATCH_FULL)
+		Printf("    Full Patch\n");
+	if(flags&XEX_MODULE_FLAG_PATCH_DELTA)
+		Printf("    Delta Patch\n");
+	if(flags&XEX_MODULE_FLAG_USER_MODE)
+		Printf("    User Mode\n");
+}
+
+
+// ********************************** dir key type 0x300/0x301 XEX_HEADER_PRIVILEGE/XEX_HEADER_PRIVILEGE2
+void showPrivInfo(DWORD val)
+{
+	printf("Priveledge %d: ", val);
+	switch(val)
+	{
+		case 0:
+			Printf("No Force Reboot  (eject does not exit program)\n");
+			break;
+		case 1:
+			Printf("Foreground Tasks\n");
+			break;
+		case 2:
+			Printf("No Optical Disc Drive Mapping\n");
+			break;
+		case 3:
+			Printf("Handles MCE Input\n");
+			break;
+		case 4:
+			Printf("Restricted HUD Features\n");
+			break;
+		case 5:
+			Printf("Handles Gampad Disconnect\n");
+			break;
+		case 6:
+			Printf("Insecure Sockets\n");
+			break;
+		case 7:
+			Printf("Reserved (Xbox1 XSP interop)\n");
+			break;
+		case 8:
+			Printf("Set Dash Context\n");
+			break;
+		case 9:
+			Printf("Title Uses Game Voice Channel\n");
+			break;
+		case 10:
+			Printf("PAL50 Incompatible\n");
+			break;
+		case 11:
+			Printf("Insecure Utility Drive\n");
+			break;
+		case 12:
+			Printf("Title hooks XAM\n");
+			break;
+		case 13:
+			Printf("Title PII\n");
+			break;
+		case 14:
+			Printf("Cross Platform System Link\n");
+			break;
+		case 15:
+			Printf("Multidisc Swap\n");
+			break;
+		case 16:
+			Printf("Multidisc Insecure\n");
+			break;
+		case 17:
+			Printf("DVDAuthExRequired\n");
+			break;
+		case 18:
+			Printf("No Confirm Exit\n");
+			break;
+		case 19:
+			Printf("Allow Background Download\n");
+			break;
+		case 20:
+			Printf("Create Persist-able RAM drive\n");
+			break;
+		case 21:
+			Printf("Inherit Persistent RAM drive\n");
+			break;
+		case 22:
+			Printf("Allow HUD vibration\n");
+			break;
+		case 23:
+			Printf("Uses both Utility Partitions\n");
+			break;
+		case 24:
+			Printf("Handles IPTV input\n");
+			break;
+		case 25:
+			Printf("Prefer Big Button Input\n");
+			break;
+		case 26:
+			Printf("Reserved\n");
+			break;
+		case 27:
+			Printf("Multidisk Cross Title\n");
+			break;
+		case 28:
+			Printf("Title Install Incompatible\n");
+			break;
+		case 29:
+			Printf("Allow Avatar Get Metadata By XUID\n");
+			break;
+		case 30:
+			Printf("Allow Controller Swapping\n");
+			break;
+		case 31:
+			Printf("Dash Extensibility Module\n");
+			break;
+		case 32:
+			Printf("Allow Network Read Cancel\n");
+			break;
+		case 33:
+			Printf("Uses Uninterruptable Reads\n");
+			break;
+		case 34:
+			Printf("Requires Full Experience\n");
+			break;
+		case 35:
+			Printf("Game Voice Required\n");
+			break;
+		case 36:
+			Printf("Set Presence String\n");
+			break;
+		case 37:
+			Printf("Natal Tilt Control\n");
+			break;
+		case 38:
+			Printf("Requires skeletal tracking\n");
+			break;
+		case 39:
+			Printf("Supports skeletal tracking\n");
+			break;
+		case 40:
+			Printf("Use large HDS file cache\n");
+			break;
+		case 41:
+			Printf("Title supports deep link\n");
+			break;
+		case 42:
+			Printf("Title body profile\n");
+			break;
+		case 43:
+			Printf("Title uses winusb\n");
+			break;
+		case 44:
+			Printf("Title supports deep link refresh\n");
+			break;
+		case 45:
+			Printf("Title restricted to local sockets\n");
+			break;
+		case 46:
+			Printf("Title content and aquire download\n");
+			break;
+		case 47:
+			Printf("Allow System Foreground\n");
+			break;
+		default:
+			Printf("!! No Info !!\n");
+			break;
+	}
+}
+#define PRIVS1_BASE		0
+#define PRIVS2_BASE		32
+local DWORD privCnt<hidden=true>;
+void enumPrivs(DWORD val, DWORD base)
+{
+	for(privCnt = 0; privCnt < 32; privCnt++)
+	{
+		if((val>>privCnt)&1)
+			showPrivInfo(privCnt+base);
+	}
+}
+
+typedef struct _IMAGE_XEX_HEADER { 
+	DWORD Magic; // 0x0 sz:0x4
+	DWORD ModuleFlags; // 0x4 sz:0x4
+	DWORD SizeOfHeaders; // 0x8 sz:0x4
+	DWORD SizeOfDiscardableHeaders; // 0xC sz:0x4
+	DWORD SecurityInfo; // 0x10 sz:0x4
+	DWORD HeaderDirectoryEntryCount; // 0x14 sz:0x4
+} IMAGE_XEX_HEADER; // size 24
+
+
+
+// ********************************** dir key type 0x2 XEX_HEADER_SECTION_TABLE
+typedef struct _XEX_SECTION_HEADER { 
+	char SectionName[0x8]; // 0x0 sz:0x8
+	DWORD VirtualAddress; // 0x8 sz:0x4
+	DWORD VirtualSize; // 0xC sz:0x4
+} XEX_SECTION_HEADER; // size 16
+
+typedef struct _XEX_SECTION_INFO {
+	DWORD			   Size;
+	XEX_SECTION_HEADER Section[(Size-4)/16];
+} XEX_SECTION_INFO;
+
+// ********************************** dir key type 0x3 XEX_FILE_DATA_DESCRIPTOR_HEADER
+#define XEX_DATA_FLAG_ENCRYPTED             0x0001
+#define XEX_DATA_FORMAT_NONE                0x0000
+#define XEX_DATA_FORMAT_RAW                 0x0001
+#define XEX_DATA_FORMAT_COMPRESSED          0x0002
+#define XEX_DATA_FORMAT_DELTA_COMPRESSED    0x0003
+
+typedef struct _XEX_DATA_DESCRIPTOR { 
+	DWORD Size; // 0x0 sz:0x4
+	BYTE DataDigest[0x14]; // 0x4 sz:0x14
+} XEX_DATA_DESCRIPTOR; // size 24
+
+typedef struct _XEX_COMPRESSED_DATA_DESCRIPTOR { 
+	DWORD WindowSize; // 0x0 sz:0x4
+	XEX_DATA_DESCRIPTOR FirstDescriptor; // 0x4 sz:0x18
+} XEX_COMPRESSED_DATA_DESCRIPTOR; // size 28
+
+typedef struct _XEX_RAW_DATA_DESCRIPTOR { 
+	DWORD DataSize; // 0x0 sz:0x4
+	DWORD ZeroSize; // 0x4 sz:0x4
+} XEX_RAW_DATA_DESCRIPTOR; // size 8
+
+typedef struct _XEX_FILE_DATA_DESCRIPTOR { 
+	DWORD Size; // 0x0 sz:0x4
+	WORD Flags; // 0x4 sz:0x2
+	WORD Format; // 0x6 sz:0x2
+	if(Format == XEX_DATA_FORMAT_DELTA_COMPRESSED)
+		XEX_COMPRESSED_DATA_DESCRIPTOR delta;
+	else if(Format == XEX_DATA_FORMAT_COMPRESSED)
+		XEX_COMPRESSED_DATA_DESCRIPTOR compressed;
+	else if(Format == XEX_DATA_FORMAT_RAW)
+		XEX_RAW_DATA_DESCRIPTOR raw[(Size-8)/8];
+} XEX_FILE_DATA_DESCRIPTOR; // size 8
+
+// ********************************** dir key type 0x400 XEX_HEADER_EXECUTION_ID
+typedef struct _XEX_EXECUTION_ID {
+	u32 MediaID; // 0x0 sz:0x4
+	u32 Version; // 0x4 sz:0x4
+	u32 BaseVersion; // 0x8 sz:0x4
+	union {
+		struct {
+			u16 PublisherID; // 0xC sz:0x2
+			u16 GameID; // 0xE sz:0x2
+		} Sep;
+		u32 TitleID; // 0xC sz:0x4
+	} Tid;
+	u8 Platform; // 0x10 sz:0x1
+	u8 ExecutableType; // 0x11 sz:0x1
+	u8 DiscNum; // 0x12 sz:0x1
+	u8 DiscsInSet; // 0x13 sz:0x1
+	u32 SaveGameID; // 0x14 sz:0x4
+} XEX_EXECUTION_ID; // size 24
+
+// ********************************** dir key type 0x405 XEX_HEADER_MSLOGO
+typedef struct _XEX_MSLOGO {
+	DWORD size;
+	BYTE data[size-4];
+} XEX_MSLOGO;
+
+// ********************************** dir key type 0x404 XEX_HEADER_LAN_KEY
+typedef struct _XEX_LANKEY{
+	BYTE key[16];
+} XEX_LANKEY;
+
+// ********************************** dir key type 0x183 XEX_HEADER_PE_MODULE_NAME
+typedef struct _XEX_PENAME {
+	DWORD size;
+	BYTE data[size-4];
+} XEX_PENAME;
+
+// ********************************** dir key type 0x80 XEX_HEADER_BOUND_PATH
+typedef struct _XEX_BOUNDPATH {
+	DWORD size;
+	char path[size-4];
+} XEX_BOUNDPATH;
+
+// ********************************** dir key type 0x180 XEX_HEADER_VITAL_STATS
+typedef struct _XEX_VITAL_STATS { 
+	DWORD CheckSum; // 0x0 sz:0x4
+	DWORD TimeDateStamp; // 0x4 sz:0x4
+} XEX_VITAL_STATS; // size 8
+
+// ********************************** dir key type 0x201 XEX_HEADER_TLS_DATA
+typedef struct _XEX_TLS_DATA { 
+	DWORD TlsSlotCount; // 0x0 sz:0x4
+	PVOID AddressOfRawData; // 0x4 sz:0x4
+	DWORD SizeOfRawData; // 0x8 sz:0x4
+	DWORD SizeOfTlsData; // 0xC sz:0x4
+} XEX_TLS_DATA; // size 16
+
+// ********************************** dir key type 0x403 XEX_HEADER_GAME_RATINGS
+typedef struct _XEX_GAME_RATINGS {
+	BYTE	Ratings[0x40];
+} XEX_GAME_RATINGS;
+
+// entry 7: type 0x200 size: 0xff info: 0x2350		XEX_HEADER_BUILD_VERSIONS
+// ********************************** dir key type 0x200 XEX_HEADER_BUILD_VERSIONS
+typedef struct _XEX_BUILD_INFO {
+	char modname[8];
+	DWORD bitfields;
+	DWORD version;
+} XEX_BUILD_INFO;
+	
+typedef struct _XEX_BUILD_VERSIONS {
+	DWORD size;
+	XEX_BUILD_INFO vers[(size-4)/16];
+} XEX_BUILD_VERSIONS;
+
+// ********************************** dir key type 0x103 XEX_HEADER_IMPORTS
+typedef struct _XEX_IMPORT_TABLE { 
+	DWORD TableSize;
+	BYTE NextImportDigest[20];
+	DWORD ModuleNumber;
+	DWORD Version[2];
+	BYTE Unused;
+	BYTE ModuleIndex;
+	WORD ImportCount;
+	BYTE ImportStubData[TableSize-40];
+	// DWORD ImportStubAddr[1];
+} XEX_IMPORT_TABLE;
+
+typedef struct _XEX_IMPORT_DESCRIPTOR { 
+	DWORD Size; // 0x0 sz:0x4
+	DWORD NameTableSize; // 0x4 sz:0x4
+	DWORD ModuleCount; // 0x8 sz:0x4
+	char names[NameTableSize];	// nametable is here of nametable size
+	XEX_IMPORT_TABLE modImport[ModuleCount] <optimize=false>;// followed by modulecount number of xex import tables
+} XEX_IMPORT_DESCRIPTOR;
+
+// ********************************** dir key type 0x5 XEX_HEADER_DELTA_PATCH_DESCRIPTOR
+typedef struct _XEX_DELTA_PATCH_DESCRIPTOR { 
+	DWORD Size; // 0x0 sz:0x4
+	DWORD TargetVersion; // 0x4 sz:0x4
+	DWORD SourceVersion; // 0x8 sz:0x4
+	BYTE DigestSource[0x14]; // 0xC sz:0x14
+	BYTE ImageKeySource[0x10]; // 0x20 sz:0x10
+	DWORD SizeOfTargetHeaders; // 0x30 sz:0x4
+	DWORD DeltaHeadersSourceOffset; // 0x34 sz:0x4
+	DWORD DeltaHeadersSourceSize; // 0x38 sz:0x4
+	DWORD DeltaHeadersTargetOffset; // 0x3C sz:0x4
+	DWORD DeltaImageSourceOffset; // 0x40 sz:0x4
+	DWORD DeltaImageSourceSize; // 0x44 sz:0x4
+	DWORD DeltaImageTargetOffset; // 0x48 sz:0x4
+	BYTE DeltaData[Size-0x4C];
+} XEX_DELTA_PATCH_DESCRIPTOR; // size 76 + data
+
+
+local DWORD count<hidden=true>;
+local DWORD type<hidden=true>;
+local DWORD size<hidden=true>;
+local DWORD info<hidden=true>;
+
+IMAGE_XEX_HEADER header;
+XEX_DIR_ENT ents[header.HeaderDirectoryEntryCount];
+FSeek(header.SecurityInfo);
+XEX_SECURITY_INFO security;
+showModuleFlagInfo(header.ModuleFlags);
+Printf("Load Address: 0x%08x\n", security.ImageInfo.LoadAddress);
+Printf("Image Size  : 0x%08x\n", security.ImageSize);
+
+Printf("Media ID    : ");
+for(count = 0; count < 16; count++)
+	Printf("%02X", security.ImageInfo.MediaID[count]);
+Printf("\n");
+
+// FSeek(0x18); // end of xex header
+count = 0;
+while(count < header.HeaderDirectoryEntryCount)
+{
+	type = ents[count].type >> 8;
+	size = ents[count].type &0xFF;
+	info = ents[count].info;
+	switch(type)
+	{
+		case 2: // XEX_HEADER_SECTION_TABLE
+			FSeek(info);
+			XEX_SECTION_INFO sections;
+			break;
+		case 3: // XEX_FILE_DATA_DESCRIPTOR_HEADER
+			FSeek(info);
+			XEX_FILE_DATA_DESCRIPTOR dataDesc;
+			break;
+		case 5: // XEX_HEADER_DELTA_PATCH_DESCRIPTOR
+			FSeek(info);
+			XEX_DELTA_PATCH_DESCRIPTOR deltaDesc;
+			break;
+		case 0x80: // XEX_HEADER_BOUND_PATH
+			FSeek(info);
+			XEX_BOUNDPATH boundPath;
+			printf("Bound Path    : %s\n", boundPath.path);
+			break;
+		case 0x0100: // XEX_HEADER_ORIGINAL_BASE_ADDRESS
+			Printf("XEX Orig Base : 0x%08x (XEX_DIR_ENT %d)\n", info, count);
+			break;
+		case 0x101: // XEX_HEADER_ENTRY_POINT
+			Printf("XEX Entrypoint: 0x%08x (XEX_DIR_ENT %d)\n", info, count);
+			break;
+		case 0x102: // XEX_HEADER_PE_BASE
+			Printf("XEX PE Base   : 0x%08x (XEX_DIR_ENT %d)\n", info, count);
+			break;
+		case 0x103: // XEX_HEADER_PE_MODULE_NAME
+			FSeek(info);
+			XEX_IMPORT_DESCRIPTOR imports;
+			break;
+		case 0x180: // XEX_HEADER_VITAL_STATS
+			FSeek(info);
+			XEX_VITAL_STATS vitalStats;
+			break;
+		case 0x183: // XEX_HEADER_PE_MODULE_NAME
+			FSeek(info);
+			XEX_PENAME peName;
+			break;
+		case 0x200: // XEX_HEADER_BUILD_VERSIONS
+			FSeek(info);
+			XEX_BUILD_VERSIONS buildVers;
+			break;
+		case 0x201: // XEX_HEADER_TLS_DATA
+			FSeek(info);
+			XEX_TLS_DATA tlsData;
+			break;
+		case 0x202: // XEX_HEADER_STACK_SIZE
+			Printf("XEX Stack Size: 0x%08x (XEX_DIR_ENT %d)\n", info, count);
+			break;
+		case 0x203: // XEX_HEADER_FSCACHE_SIZE
+			Printf("FSCache Size  : 0x%08x (XEX_DIR_ENT %d)\n", info, count);
+			break;
+		case 0x204: // XEX_HEADER_XAPI_HEAP_SIZE
+			Printf("XAPI Heap Size: 0x%08x (XEX_DIR_ENT %d)\n", info, count);
+			break;
+		case 0x300: // XEX_HEADER_PRIVILEGE
+			enumPrivs(info, PRIVS1_BASE);
+			break;
+		case 0x301: // XEX_HEADER_PRIVILEGE2
+			enumPrivs(info, PRIVS2_BASE);
+			break;
+		case 0x400: // XEX_HEADER_EXECUTION_ID
+			FSeek(info);
+			XEX_EXECUTION_ID execId;
+			break;
+		case 0x402: // XEX_HEADER_WORKSPACE_SIZE
+			Printf("Workspace Size: 0x%08x (XEX_DIR_ENT %d)\n", info, count);
+			break;
+		case 0x403: // XEX_HEADER_GAME_RATINGS
+			FSeek(info);
+			XEX_GAME_RATINGS ratings;
+			break;
+		case 0x404: // XEX_HEADER_LAN_KEY
+			FSeek(info);
+			XEX_LANKEY lankey;
+			break;
+		case 0x405: // XEX_HEADER_MSLOGO
+			FSeek(info);
+			XEX_MSLOGO logo;
+			break;
+		case 0x408: // XEX_HEADER_ADDITIONAL_TITLE_MEM
+			Printf("Atn. Title mem: 0x%08x (XEX_DIR_ENT %d)\n", info, count);
+			break;
+
+// entry 1: type 0x5 size: 0xff info: 0x1d0
+// #define XEX_HEADER_DELTA_PATCH_DESCRIPTOR	XEX_HEADER_SIZEDSTRUCT(5)
+
+
+
+// #define XEX_PATCH_FILE_BASE_REFERENCE		XEX_HEADER_FIXED_SIZE(0x0004, 0x14)
+// #define XEX_HEADER_KEY_VAULT_PRIVS			XEX_HEADER_STRUCT(0x0040, XEX_KEY_VAULT_PRIVILEGES)
+// #define XEX_HEADER_TIME_RANGE				XEX_HEADER_STRUCT(0x0041, XEX_SYSTEM_TIME_RANGE)
+// #define XEX_HEADER_CONSOLE_ID_TABLE			XEX_HEADER_SIZEDSTRUCT(0x0042) // lists disallowed console IDs
+// #define XEX_HEADER_DEVICE_ID				XEX_HEADER_FIXED_SIZE(0x0081, 0x14)
+// #define XEX_HEADER_PE_EXPORTS				XEX_HEADER_STRUCT(0xE104, IMAGE_DATA_DIRECTORY)
+// #define XEX_HEADER_CALLCAP_IMPORTS			XEX_HEADER_STRUCT(0x0181, XEX_CALLCAP_IMPORTS)
+// #define XEX_HEADER_FASTCAP_ENABLED			XEX_HEADER_FLAG(0x0182)
+// #define XEX_HEADER_PAGE_HEAP_SIZE_FLAGS		XEX_HEADER_STRUCT(0x0280, XEX_PAGE_HEAP_OPTIONS)
+// #define XEX_HEADER_PRIVILEGE(priv)			(XEX_HEADER_FLAG(0x0300)+((priv&~0x1f)<<3))
+// #define XEX_HEADER_SERVICE_ID_LIST			XEX_HEADER_SIZEDSTRUCT(0x401)
+// #define XEX_HEADER_MULTIDISK_MEDIA_IDS		XEX_HEADER_SIZEDSTRUCT(0x0406)
+// #define XEX_HEADER_ALTERNATE_TITLE_IDS		XEX_HEADER_SIZEDSTRUCT(0x0407)
+
+		default:
+			Printf("entry %d: type 0x%x size: 0x%x info: 0x%x\n", count, type, size, info);
+			break;
+	}
+	count++;	
+}
+FSeek(header.SizeOfHeaders);
+BYTE imageData[1];
+

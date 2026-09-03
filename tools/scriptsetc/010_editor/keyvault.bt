@@ -1,0 +1,139 @@
+//--------------------------------------
+//--- 010 Editor v6.0 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+BigEndian();
+BitfieldLeftToRight();
+typedef uchar u8, BYTE;
+typedef uint16 u16, SHORT;
+typedef uint32 u32, DWORD;
+typedef uint64 u64, QWORD;
+
+typedef struct {
+    DWORD           cqw;                // Number of QWORD digits in modulus
+    DWORD           dwPubExp;           // Public exponent
+    QWORD           qwReserved;         // Reserved (was qwMI)
+} XECRYPT_RSA;
+
+typedef struct {
+    XECRYPT_RSA     Rsa;                // Common header
+    QWORD           aqwM[16];           // [BnQwNe] Modulus
+    QWORD           aqwP[8];            // [BnQwNe] Private prime P
+    QWORD           aqwQ[8];            // [BnQwNe] Private prime Q
+    QWORD           aqwDP[8];           // [BnQwNe] Private exponent P
+    QWORD           aqwDQ[8];           // [BnQwNe] Private exponent Q
+    QWORD           aqwCR[8];           // [BnQwNe] Private coefficient
+} XECRYPT_RSAPRV_1024;
+
+typedef struct {
+    XECRYPT_RSA     Rsa;                // Common header
+    QWORD           aqwM[32];           // [BnQwNe] Modulus
+    QWORD           aqwP[16];           // [BnQwNe] Private prime P
+    QWORD           aqwQ[16];           // [BnQwNe] Private prime Q
+    QWORD           aqwDP[16];          // [BnQwNe] Private exponent P
+    QWORD           aqwDQ[16];          // [BnQwNe] Private exponent Q
+    QWORD           aqwCR[16];          // [BnQwNe] Private coefficient
+} XECRYPT_RSAPRV_2048;
+
+struct XECRYPT_RSAPUB_2048{
+    XECRYPT_RSA     Rsa;                // Common header
+    QWORD           aqwM[32];           // [BnQwNe] Modulus
+} ;
+
+typedef struct _HVKEYVAULT {
+	BYTE abNonce[0x10]; // 0
+	BYTE abObfs[0x8]; // 0x10
+	BYTE manufacturingMode; //0x18
+	BYTE alternateKeyvault; // 0x19
+	BYTE restrictedPrivFlags; // 0x1A
+	BYTE reservedByte3; // 0x1B
+	SHORT oddFeatures; // 0x1C
+	SHORT oddAuthtype; // 0x1E
+	SHORT restrictedHvextLoader;// 0x20
+	SHORT shReserved1;// 0x20
+	DWORD policyFlashSize;// 0x24
+	DWORD policyBuiltInMuSize;// 0x28
+	DWORD reservedDword4;// 0x2C
+	QWORD restrictedPrivileges;// 0x30
+	QWORD reservedQword2;// 0x38
+	QWORD reservedQword3;// 0x40
+	QWORD reservedQword4;// 0x48
+	BYTE abReservedKey1[0x10]; // 0x50
+	BYTE abReservedKey2[0x10]; // 0x60
+	BYTE abReservedKey3[0x10];// 0x70
+	BYTE abReservedKey4[0x10];// 0x80
+	BYTE abReservedRandomKey1[0x10];// 0x90
+	BYTE abReservedRandomKey2[0x10];// 0xA0
+	BYTE abConsoleSerial[0xC];// 0xB0
+	BYTE PADDING1[0x4];// 0xBC
+	BYTE abMoboSerial[0x8];// 0xC0
+	SHORT gameRegion;// 0xC8
+	BYTE PADDING2[0x6];// 0xCA
+	BYTE abConsoleObfKey[0x10];// 0xD0
+	BYTE abKeyObfKey[0x10];// 0xE0
+	BYTE abRoamableObfKey[0x10];// 0xF0
+	BYTE abDvdKey[0x10];// 0x100
+	BYTE abPrimaryActivationKey[0x18];// 0x110
+	BYTE abSecondaryActivationKey[0x10];// 0x128
+	BYTE abGlobalDev2desKey1[0x10];// 0x138
+	BYTE abGlobalDev2desKey2[0x10];// 0x148
+	BYTE abWirelessContrMs2desKey1[0x10];// 0x158
+	BYTE abWirelessContrMs2desKey2[0x10];// 0x168
+	BYTE abWiredWebcamMs2desKey1[0x10];// 0x178
+	BYTE abWiredWebcamMs2desKey2[0x10];// 0x188
+	BYTE abWiredContrMs2desKey1[0x10];// 0x198
+	BYTE abWiredContrMs2desKey2[0x10];// 0x1a8
+	BYTE abMemoryUnitMs2desKey1[0x10];// 0x1b8
+	BYTE abMemoryUnitMs2desKey2[0x10];// 0x1c8
+	BYTE abOthXsm3DevMs2desKey1[0x10];// 0x1d8
+	BYTE abOthXsm3DevMs2desKey2[0x10];// 0x1e8
+	BYTE abWirelessContr3p2desKey1[0x10];// 0x1f8
+	BYTE abWirelessContr3p2desKey2[0x10];// 0x208
+	BYTE abWiredWebcam3p2desKey1[0x10];// 0x218
+	BYTE abWiredWebcam3p2desKey2[0x10];// 0x228
+	BYTE abWiredContr3p2desKey1[0x10];// 0x238
+	BYTE abWiredContr3p2desKey2[0x10];// 0x248
+	BYTE abMemoryUnit3p2desKey1[0x10];// 0x258
+	BYTE abMemoryUnit3p2desKey2[0x10];// 0x268
+	BYTE abOthXsm3Dev3p2desKey1[0x10];// 0x278
+	BYTE abOthXsm3Dev3p2desKey2[0x10];// 0x288
+	XECRYPT_RSAPRV_1024 consolePrivateKey; // 0x298
+	XECRYPT_RSAPRV_2048 xeikaPrivateKey;// 0x468
+	XECRYPT_RSAPRV_1024 cardeaPrivateKey;// 0x7F8
+	SHORT consoleCertSize;// 0x9c8
+	BYTE abConsoleId[0x5];// 0x9ca
+	BYTE abConsolePartNum[0xB];// 0x9cf
+	DWORD dwConsoleReserved;// 0x9da
+	SHORT consolePrivs;// 0x9de
+	DWORD dwConsoleType;// 0x9e0
+	BYTE abManufactureDate[0x8];// 0x9e4
+	BYTE abConsolePubKeyExp[0x4];// 0x9ec
+	BYTE abConsolePubKeyModulus[0x80];// 0x9F0
+	BYTE abConsoleCertSignature[0x100];// 0xA70
+	SHORT xeikaCertSize;// 0xB70
+	XECRYPT_RSAPUB_2048 xeikaCertPubKey;// 0xb72
+	DWORD dwXeikaCertOverlaySig;// 0xC82 'OSIG'
+	SHORT xeikaCertOverlayVersion;// 0xC86
+	BYTE xeikaOddDataVersion;// 0xC88
+	BYTE xiekaOddDrivePhaseLevel;// 0xC89
+	BYTE abOddVersionString[0x28];// 0xC8A
+	BYTE xeikaCertReserved[0x1146];// 0xCB2
+	BYTE specialKvSignature[0x100];// 0x1DF8
+	BYTE abCardEaCertificate[0x2108];// 0x1EF8
+} HVKEYVAULT; // 0x4000 bytes
+
+HVKEYVAULT kv;
+FSeek(0x18+4);
+BYTE sigBlob1[0xD4]<fgcolor=cBlack, bgcolor=cLtRed>;
+FSeek(0x18+0xE8);
+BYTE sigBlob2[0x1CF8]<fgcolor=cBlack, bgcolor=cLtRed>;
+FSeek(0x18+0x1EE0);
+BYTE sigBlob3[0x2108]<fgcolor=cBlack, bgcolor=cLtRed>;
+
+FSeek(0x18+0x1DE0);
+BYTE signature[0x100]<fgcolor=cBlack, bgcolor=cLtGreen>;
+

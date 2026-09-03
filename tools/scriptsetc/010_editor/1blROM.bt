@@ -1,0 +1,328 @@
+//--------------------------------------
+//--- 010 Editor v6.0 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+BigEndian();
+BitfieldLeftToRight();
+typedef uchar u8;
+typedef uint16 u16;
+typedef uint32 u32;
+typedef uint64 u64;
+
+typedef struct XECRYPT_RSA{
+	u32 cqw;
+	u32 dwPubExp;
+	u64 qwReserved;
+}; // 16
+
+typedef struct XECRYPT_RSAPUB_2048{
+	XECRYPT_RSA Rsa;
+	u64 aqwM[0x20];
+}; // 272
+
+typedef struct ROM_HEADER{
+	u16 Magic; // 0
+	u16 Build; // 2
+	u16 Qfe; // 4
+	u16 Flags; // 6
+	u32 Entry; // 8
+	u32 dwUnk; // 12
+};
+
+typedef struct BLDR_1BLROM{
+	ROM_HEADER header; // 16 - 0
+	char achCopyright[0x80]; // 16
+	u8 abReserved[0x6C]; // 80
+	u32 dwRsaOffset; // 124
+}; // 128
+
+typedef struct BLDR_1BLROM_TABLE{
+    XECRYPT_RSAPUB_2048 RsaPub1Bl;
+    u64 qwPostOutAddr;
+    u64 qwPostInAddr;
+    u64 qwPciConfigBaseAddr;
+    u64 qwFsbConfigBaseAddr;
+    u64 qwFlashBaseAddr;
+    u64 qwSocBaseAddr;
+    u64 qwSocSramBaseAddr;
+    u8 ab1BlKey[0x10];
+    u8 abRomBSalt[0xA];
+};
+
+// SOCSECRAM_BLOCK
+// base address is 80000200_00010000
+typedef struct SOCSECRAM_BLOCK { 
+	QWORD Array[0x2000]; // 0x0 sz:0x10000
+}; // size 65536
+
+// SOCSECRNG_BLOCK
+// base address is 80000200_00000000
+typedef struct SOCSECROM_BLOCK { 
+	QWORD Array[0x1000]; // 0x0 sz:0x8000
+	QWORD ArrayAlias[0x1000]; // 0x8000 sz:0x8000
+}; // size 65536
+
+typedef struct SOC_CPU_FUSES{
+    u64 Row0_SecurityBits[0x40];
+    u64 Row1_ConsoleType[0x40];
+    u64 Row2_ConsoleSequence[0x40];
+    u64 Row3_UniqueId1[0x40];
+    u64 Row4_UniqueId2[0x40];
+    u64 Row5_UniqueId3[0x40];
+    u64 Row6_UniqueId4[0x40];
+    u64 Row7_UpdateSequence[0x40];
+    u64 Row8_EepromKey1[0x40];
+    u64 Row9_EepromKey2[0x40];
+    u64 Row10_EepromHash1[0x40];
+    u64 Row11_EepromHash2[0x40];
+};
+typedef union _SECURITY_BITS {
+	struct{
+		u64 NotValid : 2;
+		u64 Secure : 2;
+		u64 Unlock : 2; // typically only these two bits are set to 1, aside from reserved
+		u64 Eeprom : 2;
+		u64 Reserved1 : 56; // 0xFF filled
+	} AsBITS;
+	u64 AsULONGLONG;
+} SECURITY_BITS; // 8
+
+// ideally only use the first item of each of these because of the repeating fuselines
+typedef struct _SOCSECOTP_ARRAY {
+	SECURITY_BITS sec[64];
+	u64 ConsoleType[64];
+	u64 ConsoleSequence[64];
+	u64 UniqueId1[64]; 
+	u64 UniqueId2[64]; 
+	u64 UniqueId3[64];
+	u64 UniqueId4[64]; 
+	u64 UpdateSequence[64];
+	u64 EepromKey1[64];
+	u64 EepromKey2[64];
+	u64 EepromHash1[64];
+	u64 EepromHash2[64];
+} SOCSECOTP_ARRAY; // 6144
+
+typedef union _SECOTP_BUSY { 
+	struct{
+		u64 Busy : 1;
+		u64 Reserved1 : 63;
+	} AsBITS;
+	u64 AsULONGLONG;
+} SECOTP_BUSY;
+
+typedef union _SECOTP_PARAMETERS {
+	struct{
+		u64 WidthOfXWindow : 6;
+		u64 WidthOfYWindow : 8;
+		u64 SlowClockSelect : 1;
+		u64 TimeToStabilizeBlowVoltage : 9;
+		u64 Time400 : 10;
+		u64 TimeToBlowFuse : 9;
+		u64 TimeToDisconnectFSource : 5;
+		u64 TimeToPullFSourceToZero : 5;
+		u64 Reserved1 : 11;
+	} AsBITS;
+	u64 AsULONGLONG;
+} SECOTP_PARAMETERS;
+
+typedef union _SECOTP_SENSE_CONTROL { 
+	struct{
+		u64 TriggerSenseTransaction : 1;
+		u64 Reserved1 : 63;
+	} AsBITS;
+	u64 AsULONGLONG;
+} SECOTP_SENSE_CONTROL;
+
+typedef union _SECOTP_BLOW_CONTROL { 
+	struct{
+		u64 EnableBlowFuseOperation : 1;
+		u64 Reserved1 : 63;
+	} AsBITS;
+	u64 AsULONGLONG;
+} SECOTP_BLOW_CONTROL;
+
+typedef struct _SOCSECOTP_BLOCK { 
+	SOCSECOTP_ARRAY Array; // 0 the full fuse array, see note above on fuselines
+	u64 Reserved1[256]; // 6144
+	SECOTP_BUSY BusyFlag; // 8192
+	SECOTP_PARAMETERS Parameters; // 8200
+	SECOTP_SENSE_CONTROL SenseControl; // 8208
+	SECOTP_BLOW_CONTROL BlowControl; // 8216
+	u64 TraceLogicArrayControl; // 8224
+	u64 Reserved2[1019]; // 8232
+} SOCSECOTP_BLOCK; // 16384
+
+typedef union CBI_CONFIGURATION { 
+	struct {
+		u64 SnoopDelay : 5;
+		u64 FastLoadEnable : 1;
+		u64 Reserved1 : 58;
+	} AsBITS;
+	u64 AsULONGLONG;
+} ;
+
+typedef union CBI_FAULT_ISOLATION { 
+	struct {
+		u64 BadMMIOAccess : 1;
+		u64 BadAlignmentOnStoresToMainMemory : 1;
+		u64 BadAlignmentOnLoadsFromFiTPMemory : 1;
+		u64 PMWStoreCommandToFiTPMemory : 1;
+		u64 BadLengthField : 1;
+		u64 NullSnoopReplyFromPMWReceivedOnValidGPULoad : 1;
+		u64 ModifiedReplyFromPMWOnFlushCommand : 1;
+		u64 SharedInterventionReplyFromPMWOnLoadCommand : 1;
+		u64 NullCombinedResponseForPMWCommand : 1;
+		u64 BadPacketFromFSB : 1;
+		u64 Reserved1 : 54;
+	} AsBITS;
+	u64 AsULONGLONG;
+} ;
+
+typedef union CBI_CONTROL { 
+	struct {
+		u64 OddRetryDelay : 2;
+		u64 EvenRetryDelay : 2;
+		u64 SingleThreadModeEnable : 1;
+		u64 DisplayAlterModeEnable : 1;
+		u64 StarvationAvoidanceModeEnable : 1;		
+		u64 Reserved1 : 57;
+	} AsBITS;
+	u64 AsULONGLONG;
+} ;
+
+typedef struct SOCCBI_BLOCK { 
+	CBI_CONFIGURATION CBIConfiguration; // 0
+	CBI_CONTROL CBIControl; // 8
+	CBI_FAULT_ISOLATION FaultIsolation; // 16
+	CBI_FAULT_ISOLATION FaultIsolationAndMask; // 24
+	CBI_FAULT_ISOLATION FaultIsolationOrMask; // 32
+	CBI_FAULT_ISOLATION FaultIsolationMask; // 40
+	CBI_FAULT_ISOLATION FirstErrorCapture; // 48
+	CBI_FAULT_ISOLATION FirstErrorCaptureAndMask; // 56
+	CBI_FAULT_ISOLATION FirstErrorCaptureOrMask; // 64
+	CBI_FAULT_ISOLATION FaultIsolationCheckstop; // 72
+	CBI_FAULT_ISOLATION FaultIsolationDebug; // 80
+	u64 MPIRetryCounter; // 88
+	u64 PAAMCollisionCounter; // 96
+	u64 MPITraceSelect; // 104
+	u64 TBIUTraceSelect; // 112
+	u64 RBIUTraceSelect; // 120
+	u64 RIUTraceSelect; // 128
+	u64 CBITraceSelect; // 136
+	u64 FSBDisplayAlterCommand; // 144
+	u64 FSBDispalyAlterAddress; // 152
+	u64 FSBDisplayAlterData; // 160
+	u64 MPIDisplayAlterCommand; // 168
+	u64 Reserved[4074]; // 176
+} ; // size 32768 0x8000
+
+// SOCSECENG_BLOCK
+// base address is 80000200_00024000
+
+typedef union SECENG_FAULT_ISOLATION {
+	struct{
+		QWORD IntegrityViolation : 1; // 0x0 bfo:0x63
+		QWORD Reserved1 : 63; // 0x0 bfo:0x0
+	}AsBits;
+	QWORD AsULONGLONG; // 0x0 sz:0x8
+}; // size 8
+
+typedef struct SECENG_KEYS { 
+	QWORD WhiteningKey0High; // 0x0 sz:0x8
+	QWORD WhiteningKey0Low; // 0x8 sz:0x8
+	QWORD WhiteningKey1High; // 0x10 sz:0x8
+	QWORD WhiteningKey1Low; // 0x18 sz:0x8
+	QWORD WhiteningKey2High; // 0x20 sz:0x8
+	QWORD WhiteningKey2Low; // 0x28 sz:0x8
+	QWORD WhiteningKey3High; // 0x30 sz:0x8
+	QWORD WhiteningKey3Low; // 0x38 sz:0x8
+	QWORD AESKey0High; // 0x40 sz:0x8
+	QWORD AESKey0Low; // 0x48 sz:0x8
+	QWORD AESKey1High; // 0x50 sz:0x8
+	QWORD AESKey1Low; // 0x58 sz:0x8
+	QWORD AESKey2High; // 0x60 sz:0x8
+	QWORD AESKey2Low; // 0x68 sz:0x8
+	QWORD AESKey3High; // 0x70 sz:0x8
+	QWORD AESKey3Low; // 0x78 sz:0x8
+	QWORD HashKey0High; // 0x80 sz:0x8
+	QWORD HashKey0Low; // 0x88 sz:0x8
+	QWORD HashKey1High; // 0x90 sz:0x8
+	QWORD HashKey1Low; // 0x98 sz:0x8
+}; // size 160
+
+typedef struct SOCSECENG_BLOCK { 
+	SECENG_KEYS WritePathKeys; // 0x0 sz:0xA0
+	QWORD TraceLogicArrayWritePathControl; // 0xA0 sz:0x8
+	QWORD qwUnkn1;
+	QWORD Reserved1[0x1EA]; // 0xA8 sz:0xF58
+	SECENG_KEYS ReadPathKeys; // 0x1000 sz:0xA0
+	QWORD TraceLogicArrayReadPathControl; // 0x10A0 sz:0x8
+	SECENG_FAULT_ISOLATION FaultIsolationMask; // 0x10A8 sz:0x8
+	SECENG_FAULT_ISOLATION FaultIsolation; // 0x10B0 sz:0x8
+	QWORD IntegrityViolationSignature; // 0x10B8 sz:0x8
+	QWORD qwUnkn2;
+	QWORD Reserved2[0x1E7]; // 0x10C0 sz:0xF40
+
+}; // size 8192
+
+
+// SOCSECRNG_BLOCK
+// base address is 80000200_00026000
+typedef union SECRNG_STATUS {
+	struct{
+		QWORD FifoEmpty : 1; // 0x0 bfo:0x63
+		QWORD Reserved1 : 63; // 0x0 bfo:0x0
+	} AsBITS;
+	QWORD AsULONGLONG; // 0x0 sz:0x8
+}; // size 8
+
+typedef union SECRNG_CONFIGURATION { 
+	struct{
+		QWORD BitStreamEnable : 6; // 0x0 bfo:0x58
+		QWORD ChannelEnable : 4; // 0x0 bfo:0x54
+		QWORD TestingControl : 10; // 0x0 bfo:0x44
+		QWORD Reserved1 : 44; // 0x0 bfo:0x0
+	} AsBITS;
+	QWORD AsULONGLONG; // 0x0 sz:0x8
+}; // size 8
+
+typedef struct SOCSECRNG_BLOCK { 
+	SECRNG_STATUS Status; // 0x0 sz:0x8
+	QWORD Fifo; // 0x8 sz:0x8
+	SECRNG_CONFIGURATION Configuration; // 0x10 sz:0x8
+	QWORD TraceLogicArrayControl; // 0x18 sz:0x8
+	QWORD Reserved[0x3FC]; // 0x20 sz:0x1FE0
+}; // size 8192
+
+BLDR_1BLROM romHeader;
+FSeek(romHeader.dwRsaOffset);
+BLDR_1BLROM_TABLE romTable;
+FSeek(0);
+SOCSECROM_BLOCK SocRom;
+
+if(FileSize() >= 0x20000)
+{
+    FSeek(0x10000);
+    SOCSECRAM_BLOCK SocSram;
+    if(FileSize() >= 0x30000)
+    {
+        FSeek(0x20000);
+        SOCSECOTP_BLOCK SocSecOtp;
+        FSeek(0x24000);
+        SOCSECENG_BLOCK secEng;
+        FSeek(0x26000);
+        SOCSECRNG_BLOCK secRng;
+        FSeek(0x28000);
+        SOCCBI_BLOCK Cbi;
+
+        FSeek(0x250B8);
+        u64 TransformMagic;
+        FSeek(0x26008);
+        u64 PrngHardwareReg;
+    }
+}

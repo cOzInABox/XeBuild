@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="isoio.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="mspack\lzxd.c" />
+    <ClCompile Include="mspack\system.c" />
+    <ClCompile Include="spa.c" />
+    <ClCompile Include="util.c" />
+    <ClCompile Include="xexInflate.c" />
+    <ClCompile Include="xexinfo.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="isoio.h" />
+    <ClInclude Include="keys.h" />
+    <ClInclude Include="libxml2\libxml\c14n.h" />
+    <ClInclude Include="libxml2\libxml\catalog.h" />
+    <ClInclude Include="libxml2\libxml\chvalid.h" />
+    <ClInclude Include="libxml2\libxml\debugXML.h" />
+    <ClInclude Include="libxml2\libxml\dict.h" />
+    <ClInclude Include="libxml2\libxml\DOCBparser.h" />
+    <ClInclude Include="libxml2\libxml\encoding.h" />
+    <ClInclude Include="libxml2\libxml\entities.h" />
+    <ClInclude Include="libxml2\libxml\globals.h" />
+    <ClInclude Include="libxml2\libxml\hash.h" />
+    <ClInclude Include="libxml2\libxml\HTMLparser.h" />
+    <ClInclude Include="libxml2\libxml\HTMLtree.h" />
+    <ClInclude Include="libxml2\libxml\list.h" />
+    <ClInclude Include="libxml2\libxml\nanoftp.h" />
+    <ClInclude Include="libxml2\libxml\nanohttp.h" />
+    <ClInclude Include="libxml2\libxml\parser.h" />
+    <ClInclude Include="libxml2\libxml\parserInternals.h" />
+    <ClInclude Include="libxml2\libxml\pattern.h" />
+    <ClInclude Include="libxml2\libxml\relaxng.h" />
+    <ClInclude Include="libxml2\libxml\SAX.h" />
+    <ClInclude Include="libxml2\libxml\SAX2.h" />
+    <ClInclude Include="libxml2\libxml\schemasInternals.h" />
+    <ClInclude Include="libxml2\libxml\schematron.h" />
+    <ClInclude Include="libxml2\libxml\threads.h" />
+    <ClInclude Include="libxml2\libxml\tree.h" />
+    <ClInclude Include="libxml2\libxml\uri.h" />
+    <ClInclude Include="libxml2\libxml\valid.h" />
+    <ClInclude Include="libxml2\libxml\xinclude.h" />
+    <ClInclude Include="libxml2\libxml\xlink.h" />
+    <ClInclude Include="libxml2\libxml\xmlautomata.h" />
+    <ClInclude Include="libxml2\libxml\xmlerror.h" />
+    <ClInclude Include="libxml2\libxml\xmlexports.h" />
+    <ClInclude Include="libxml2\libxml\xmlIO.h" />
+    <ClInclude Include="libxml2\libxml\xmlmemory.h" />
+    <ClInclude Include="libxml2\libxml\xmlmodule.h" />
+    <ClInclude Include="libxml2\libxml\xmlreader.h" />
+    <ClInclude Include="libxml2\libxml\xmlregexp.h" />
+    <ClInclude Include="libxml2\libxml\xmlsave.h" />
+    <ClInclude Include="libxml2\libxml\xmlschemas.h" />
+    <ClInclude Include="libxml2\libxml\xmlschemastypes.h" />
+    <ClInclude Include="libxml2\libxml\xmlstring.h" />
+    <ClInclude Include="libxml2\libxml\xmlunicode.h" />
+    <ClInclude Include="libxml2\libxml\xmlversion.h" />
+    <ClInclude Include="libxml2\libxml\xmlwriter.h" />
+    <ClInclude Include="libxml2\libxml\xpath.h" />
+    <ClInclude Include="libxml2\libxml\xpathInternals.h" />
+    <ClInclude Include="libxml2\libxml\xpointer.h" />
+    <ClInclude Include="mspack\lzx.h" />
+    <ClInclude Include="mspack\mspack.h" />
+    <ClInclude Include="mspack\readbits.h" />
+    <ClInclude Include="mspack\readhuff.h" />
+    <ClInclude Include="mspack\system.h" />
+    <ClInclude Include="spa.h" />
+    <ClInclude Include="types.h" />
+    <ClInclude Include="util.h" />
+    <ClInclude Include="xcontent.h" />
+    <ClInclude Include="xexheader.h" />
+    <ClInclude Include="xexInflate.h" />
+    <ClInclude Include="xexinfo.h" />
+    <ClInclude Include="zconf.h" />
+    <ClInclude Include="zlib.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="libiconvStatic.lib" />
+    <Library Include="libxml2_a.lib" />
+    <Library Include="zlib.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\XeCrypt\XeCrypt.2015.vcxproj">
+      <Project>{d710e01d-cc22-4989-ba94-3058cc146da5}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{FF6E9C65-DDC2-4C03-876B-BA74B9A717F1}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>iso2svod</RootNamespace>
+    <ProjectName>iso2svod</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v140</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\XeCrypt;$(ProjectDir)\libxml2;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MinSpace</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <CompileAs>CompileAsC</CompileAs>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\XeCrypt;$(ProjectDir)\libxml2;</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <StringPooling>true</StringPooling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitDefaultLibName>true</OmitDefaultLibName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <LinkErrorReporting>NoErrorReport</LinkErrorReporting>
+    </Link>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,248 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\mspack">
+      <UniqueIdentifier>{79e91a08-9311-45f5-a3ba-641686527f40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mspack">
+      <UniqueIdentifier>{a52525e2-b1e9-44f2-869b-300daa0c019e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\libxml">
+      <UniqueIdentifier>{9f7da1c0-cb68-44aa-a506-394de5184c5d}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="util.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="isoio.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xexinfo.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="xexInflate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mspack\system.c">
+      <Filter>Source Files\mspack</Filter>
+    </ClCompile>
+    <ClCompile Include="mspack\lzxd.c">
+      <Filter>Source Files\mspack</Filter>
+    </ClCompile>
+    <ClCompile Include="spa.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xcontent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="isoio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xexinfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xexheader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keys.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xexInflate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mspack\lzx.h">
+      <Filter>Header Files\mspack</Filter>
+    </ClInclude>
+    <ClInclude Include="mspack\mspack.h">
+      <Filter>Header Files\mspack</Filter>
+    </ClInclude>
+    <ClInclude Include="mspack\readbits.h">
+      <Filter>Header Files\mspack</Filter>
+    </ClInclude>
+    <ClInclude Include="mspack\readhuff.h">
+      <Filter>Header Files\mspack</Filter>
+    </ClInclude>
+    <ClInclude Include="mspack\system.h">
+      <Filter>Header Files\mspack</Filter>
+    </ClInclude>
+    <ClInclude Include="spa.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zconf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\c14n.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\catalog.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\chvalid.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\debugXML.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\dict.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\DOCBparser.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\encoding.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\entities.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\globals.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\hash.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\HTMLparser.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\HTMLtree.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\list.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\nanoftp.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\nanohttp.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\parser.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\parserInternals.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\pattern.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\relaxng.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\SAX.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\SAX2.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\schemasInternals.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\schematron.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\threads.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\tree.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\uri.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\valid.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xinclude.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xlink.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlautomata.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlerror.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlexports.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlIO.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlmemory.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlmodule.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlreader.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlregexp.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlsave.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlschemas.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlschemastypes.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlstring.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlunicode.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlversion.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xmlwriter.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xpath.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xpathInternals.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+    <ClInclude Include="libxml2\libxml\xpointer.h">
+      <Filter>Header Files\libxml</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="zlib.lib" />
+    <Library Include="libxml2_a.lib" />
+    <Library Include="libiconvStatic.lib" />
+  </ItemGroup>
+</Project>

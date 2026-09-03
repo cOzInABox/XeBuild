@@ -1,0 +1,456 @@
+CPU PVR
+falcon		0x710500
+jasper		0x710500
+trinity		0x710800
+corona		0x710800
+winchester	0x710A00
+
+WORD SRAM16CRC(WORD* data)
+{
+    WORD checksum = 0;
+    int rotateValue = 1;
+    int rotateCounter = 0;
+    int i;
+    for(i = 0; i < 0x40; i++)
+    {
+        checksum = checksum ^ ((data[i] >> rotateValue) | (data[i] << (16 - rotateValue)));
+        rotateCounter++;
+        if(rotateCounter == 4)
+        {
+            rotateCounter = 0;
+            rotateValue++;
+        }
+    }
+    return checksum;
+}
+
+hvpeek 8000020000000000 64 6000 << dump 1bl and soc area, 0x30000 bytes
+
+hv in runtime:
+0x80000000_00000000 - first page
+0x80000002_00010000 - second page
+0x80000004_00020000 - third page
+0x80000006_00030000 - fourth page
+----------------------------------------------------------------
+----------<SOCROM_BLOCK (32768)>-------- 8000020000000000 8000
+0x80000200_00000000		1BL ROM base Address
+0x80000200_000000FC		Rsa_Key  Pointer in 1bl
+0x80000200_000010B8		Key Transform Magic Bytes?
+----------<SOCROM_BLOCK (32768)>-------- 8000020000008000 8000
+0x80000200_00008000		1BL ROM mirror base Address
+----------<SOCSRAM_BLOCK (32768)>------- 8000020000010000 10000
+0x80000200_00010000     CPU SRAM (64k)
+----------<SOCSECOTP_BLOCK (16384)>----- 8000020000020000 4000
+0x80000200_00020000		SOCSECOTP_BLOCK CPU Fuses (SocSecurityOpts)
+0x80000200_00022000
+0x80000200_00022008
+0x80000200_00022010
+0x80000200_00022018
+----------<SOCSECENG_BLOCK (8192)>------ 8000020000024000 2000
+0x80000200_00024000
+----------<SOCSECRNG_BLOCK (8192)>------ 8000020000026000 2000
+0x80000200_00026008		8byte hardware PRNG
+----------<SOCCBI_BLOCK (32768)>-------- 8000020000028000 8000
+0x80000200_00028000
+----------<SOCFSBTTX_BLOCK (32768)>----- 8000020000030000 8000
+0x80000200_00030000
+0x80000200_00030010
+0x80000200_00030020
+0x80000200_00033010		HvxFsbInterrupt
+0x80000200_00033110
+0x80000200_00033200		HvxFsbInterrupt
+0x80000200_00037000
+----------<SOCFSBTRX_BLOCK (32768)>----- 8000020000038000 8000
+0x80000200_00038000
+----------<SOCFSBLTX_BLOCK (32768)>----- 8000020000040000 8000
+0x80000200_00040000
+0x80000200_00043000		HvxFsbInterrupt
+0x80000200_00043010		HvxFsbInterrupt
+0x80000200_00043110
+0x80000200_00043200		HvxFsbInterrupt
+0x80000200_00044000
+0x80000200_00044100
+0x80000200_00044200
+0x80000200_00046000		VdpClockRegisterConfig (set) SocRegister
+0x80000200_00046100
+0x80000200_00046200		VdpClockRegisterConfig (get) SocRegister
+0x80000200_00047100		HvxFsbInterrupt
+0x80000200_00047120		HvxFsbInterrupt
+----------<SOCFSBLRX_BLOCK (32768)>----- 8000020000048000 8000
+0x80000200_00048000
+----------<SOCINTS_BLOCK (32768)>------- 8000020000050000 8000
+0x80000200_00050000		(6 cores, each @ 0x1000 intervals)
+0x80000200_00050008		InterruptTaskPriority (6 cores, each @ 0x1000 intervals)
+0x80000200_00050010		IpiGeneration (6 cores, each @ 0x1000 intervals)
+0x80000200_00050050		InterruptAcknowledge - read destructive (6 cores, each @ 0x1000 intervals)
+0x80000200_00050060		EndOfInterrupt (6 cores, each @ 0x1000 intervals)
+0x80000200_00050068		EndOfInterruptAutoUpdate (6 cores, each @ 0x1000 intervals)
+0x80000200_00050070		SpuriousVector (6 cores, each @ 0x1000 intervals)
+0x80000200_00054008
+0x80000200_00054081
+0x80000200_00056000
+0x80000200_00056010
+0x80000200_00056020		KeEnablePFMInterrupt/KeDisablePFMInterrupt (get/set) SocRegister
+0x80000200_00056030
+0x80000200_00056040
+----------<RESERVED (32768)>------------ 8000020000058000 8000 - Unknown (Possibly Reserved?)
+thx levi
+----------<SOCPMW_BLOCK (4096)>--------- 8000020000060000 1000/200
+0x80000200_00060000		_SOCPMW_BLOCK(base) KeGetPMWRegister/KeSetPMWRegister SocRegister
+0x80000200_00060300		_L2_RMT_SETUP Lock L2
+0x80000200_00060700		_CIU_SLICE_MODE_SETUP
+0x80000200_00060840		_L2_MODE_SETUP
+0x80000200_00060B58		_BIU_DEBUG_1
+----------<SOCPRV_BLOCK (4096)>--------- 8000020000061000 1000/200
+0x80000200_00061000		KeGetPRVRegister SocRegister _SOCPRV_BLOCK (4096)
+0x80000200_00061008		POST in Port (8bit)
+0x80000200_00061010		POST out Port		
+0x80000200_00061030
+0x80000200_00061050		_PRV_FAULT_ISOLATION_MACHINE_CHECK
+0x80000200_00061060		_PRV_FAULT_ISOLATION_ENABLE
+0x80000200_00061188		_PRV_POWER_MANAGEMENT_CONTROL
+0x80000200_00061190		_PRV_THERMAL_DIODE_CALIBRATION
+0x80000200_00061198		_PRV_PSRO_COUNT
+0x80000200_000611A0		_PRV_TIMEBASE_CONTROL Enable Timebase?
+0x80000200_000611C8		_FPM_STATUS
+---------------------------------------
+0x80000200_C0000000		L2 cache? GPU main memory region?
+0x80000200_C8000000		Scfx Flash logical map (mapped to virtual address 0xC8000000)
+0x80000200_D0000000		PCI Config Space
+0x80000200_E0000000
+0x80000200_E1000000		Host Bridge (FSB config?)
+0x80000200_E1007000 
+0x80000200_E1020004
+0x80000200_E4000000		HvpWriteStrobeDllTraining
+0x80000200_EA000000		PCI-to-PCI bridge
+0x80000200_EC800000		GPU
+----------------------------------------------------------------
+
+-------------------------------------
+Virtual Memory Layout
+-------------------------------------
+Virtual 4k		0x00000000-0x3FFFFFFF
+Virtual 64k		0x40000000-0x7FFFFFFF
+Image 64k		0x80000000-0x8BFFFFFF
+Encrypted 64k	0x8C000000-0x8DFFFFFF
+System 64k		0x8E000000-0x8FFFFFFF
+Image 4k		0x90000000-0x9FFFFFFF
+Physical 64k	0xA0000000-0xBFFFFFFF
+Physical 16M	0xC0000000-0xDFFFFFFF
+Physical 4k		0xE0000000-0xFFFFFFFF
+----------------------------------------------------------------
+*as of 12611*
+<GPU main memory map> (512MB)
+	Virtual: 0xc0000000 Physical: 0x00000000 Protect: 0x0002 (Physical 16M)
+	Virtual: 0xc1000000 Physical: 0x01000000 Protect: 0x0002 (Physical 16M)
+		to
+	Virtual: 0xde000000 Physical: 0x1e000000 Protect: 0x0002 (Physical 16M)
+	Virtual: 0xdf000000 Physical: 0x1f000000 Protect: 0x0002 (Physical 16M)
+<GPU register map>
+	Vir:0x7f000000	Phy:0xc0000000	Prot:0x0040 Len: 0x10000
+		to
+	Vir:0x7f7f0000	Phy:0xc07f0000	Prot:0x0040 Len: 0x10000
+<display cont - other display>
+	Vir:0x7fc80000	Phy:0xec800000	Prot:0x0240 Len: 0x10000 
+	Vir:0x7fc90000	Phy:0xec810000	Prot:0x0240 Len: 0x10000
+<??bridge dev (Host)??>
+	Vir:0x7fd00000	Phy:0xe1000000	Prot:0x0240 Len: 0x10000 
+	Vir:0x7fd10000	Phy:0xe1010000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fd20000	Phy:0xe1020000	Prot:0x0240 Len: 0x10000 Northbridge (Biu)
+	Vir:0x7fd30000	Phy:0xe1030000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fd40000	Phy:0xe1040000	Prot:0x0240 Len: 0x10000 Northbridge (Ioc, external interrupt source?), ram size at 0 offset
+	Vir:0x7fd50000	Phy:0xe1050000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fd60000	Phy:0xe1060000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fd70000	Phy:0xe1070000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fd80000	Phy:0xe1080000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fd90000	Phy:0xe1090000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fda0000	Phy:0xe10a0000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fdb0000	Phy:0xe10b0000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fdc0000	Phy:0xe10c0000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fdd0000	Phy:0xe10d0000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fde0000	Phy:0xe10e0000	Prot:0x0240 Len: 0x10000
+	Vir:0x7fdf0000	Phy:0xe10f0000	Prot:0x0240 Len: 0x10000
+<peripheral region>
+	Vir:0x7fea0000	Phy:0xea000000	Prot:0x0240 Len: 0x10000
+<display cont - other display (PCI config region)>
+	Vir:0x7fed0000	Phy:0xd0010000	Prot:0x0240 Len: 0x10000
+
+----------------------------------------------------------------
+7FEAxxxx is mapped to EA00xxxx  PCI-to-PCI bridge
+ie: 0x7FEAC000 = 0x80000200_ea00c000
+----------------
+0x7FD20020				HalpInitializeNorthbridgeErrorInterrupt HalpDriverNotification (HalpBiuInterruptObject)
+0x7FD20028				HalpInitializeNorthbridgeErrorInterrupt HalpDriverNotification (HalpBiuInterruptObject)
+0x7FD4002C				HalpInitializeNorthbridgeErrorInterrupt HalpDriverNotification (HalpIocInterruptObject)
+0x7FD40034				HalpInitializeNorthbridgeErrorInterrupt HalpDriverNotification (HalpIocInterruptObject)
+0x7FD40074				HalpInitializeExternalInterrupts
+0x7FD40078				HalpInitializeExternalInterrupts
+
+0x7FEDA1F8				MmMapPCISpace  ???
+0X7FEDA1AC				MmMapPCISpace  ???
+----------<PCI-PCI BRIDGE>---------
+0x7FEA0004				HalpInitializeExternalInterrupts
+0x7FEA000C				BusIrql						  HalpInitializeExternalInterrupts/HalEnableBusIrql
+----------<HAL>--------------------  
+0x7FEA1000				Bus Status? HalpSMCRequestDpc
+0x7FEA100C				Bus Control
+<serial port 0x1010-1020>
+0x7FEA1010				(UART_RCV_REG) Serial Port
+0x7FEA1014				(UART_XMIT_REG) KdPortPutByte
+0x7FEA1018				(UART_STS_REG) KdpSerialPortPollStatus
+0x7FEA101C				(UART_CNTRL_REG) Bus Control (UART clock divider + ??)
+<GPIO 0x1020-1040>
+0x7FEA1020				(HalGpioOutputEnable) HalGpioControl
+0x7FEA1024				(HalGpioOutputType)
+0x7FEA1028				(HalGpioAlternateFunction)
+0x7FEA1030				(HalGpioOutputData)
+0x7FEA1034				(HalGpioOutputDataSet)
+0x7FEA1038				(HalGpioOutputDataClear)
+0x7FEA1040				(HalGpioInputData)
+0x7FEA1044				(HalGpioInputInverting)
+0x7FEA1048				(HalGpioNoiseCancelWidth)
+0x7FEA104C				(HalGpioNoiseCancelWidth)
+<SMI 0x1050-1080>
+0x7FEA1050				HalpSMMInterrupt
+0x7FEA1058				HalpSMMInterrupt
+0x7FEA105C				HalpEnableSMMInterrupts
+0x7FEA1064				HalpEnableSMMInterrupts
+0x7FEA1068				HalpDisableSMMInterrupts
+0x7FEA106C				HalpEnableSMMInterrupts/KiClockInterrupt
+<SMC fifo>
+0x7FEA1080				(SMC_XMIT_BUF) HalpSendSMCMessage fifo
+0x7FEA1084				(SMC_XMIT_STS) HalpSendSMCMessage fifo
+0x7FEA1090				(SMC_RCV_BUF) HalpSendSMCMessage fifo
+0x7FEA1094				(SMC_RCV_STS) HalpSendSMCMessage fifo
+----------<SATA>-------------------
+0x7FEA1200				(CDROM_DATA_REGISTER) SataCdRomWritePacket/HalpInitializeSATASupport
+0x7FEA1201				(CDROM_ERROR_FEAT_REGISTER) SataCdRomIssueAtapiRequest
+0x7FEA1202				(CDROM_SECTOR_COUNT_REGISTER) 
+0x7FEA1203				(CDROM_SECTOR_NUMBER_REGISTER) 
+0x7FEA1204				(CDROM_CONTROL_LOW_REGISTER) byte
+0x7FEA1205				(CDROM_CONTROL_HIGH_REGISTER) byte
+0X7FEA1206				(CDROM_DEVICE_SELECT_REGISTER) SataCdRomSelectDeviceAndSpinWhileBusy
+0x7FEA1207				(CDROM_STATUS_REGISTER/CDROM_COMMAND_REGISTER) SataCdRomPollResetComplete
+0x7FEA120A				
+0x7FEA1218				HalpInitializeSATASupport
+0x7FEA1220				SataCdRomIssueAtapiRequest
+0x7FEA1300				SataDiskInitialize/SataDiskIssueImmediateCommand
+0x7FEA1301				DumpSatapSetTransferMode
+0x7FEA1302				SataDiskProgram28BitLBATransfer
+0x7FEA1303				SataDiskProgram28BitLBATransfer 
+0x7FEA1304				SataDiskProgram28BitLBATransfer
+0x7FEA1305				SataDiskProgram28BitLBATransfer
+0x7FEA1306				SataDiskSelectDeviceAndSpinWhileBusy
+0x7FEA1307				DumpSatapWriteCommandPort/SataDiskPollResetComplete
+0x7FEA130A				SataDiskInitialize/DumpSatapWriteDeviceControlPort
+0x7FEA1318				HalpInitializeSATASupport
+0x7FEA1320				DumpSatapWriteBusMasterCommandPort/SataDiskStartReadWrite
+0x7FEA1322				DumpSatapWriteBusMasterStatusPort
+0x7FEA1324				DumpSatapWriteBusMasterDescriptorTablePort
+----------<ENET/NIC>---------------
+0x7FEA1400				NicStartTx
+0x7FEA1410
+0x7FEA1420
+0x7FEA1424
+0x7FEA1428				NicReset
+0x7FEA1440				NicMiiInterrupt
+0x7FEA1444
+0x7FEA1450				NicMiiInterrupt
+0x7FEA1454				NicMiiInterrupt
+0x7FEA1460				NicMiiInterrupt
+0x7FEA1462
+0x7FEA1478
+0x7FEA147A
+----------<AUDIO>------------------
+0x7FEA1600				is2stream1 XAudioCAudioOutQcuAudRegisters
+0x7FEA1604				is2stream2
+0x7FEA1608				is2stream3
+0x7FEA160C				is2stream4 0x7FEA160C(is2stream) = 0x7FEA161C (spdif)
+0x7FEA1610				spdif1
+0x7FEA1614				spdif2
+0x7FEA1618				spdif3
+0x7FEA161C				spdif4
+----------<XMA DECODER>-----------
+0x7FEA1800				XMADECODER
+0x7FEA1804
+0x7FEA1808
+0x7FEA1818
+0x7FEA1820
+0x7FEA190C
+0x7FEA1910
+0x7FEA1A08
+0x7FEA1A40
+0x7FEA1A44
+0x7FEA1A48
+0x7FEA1A4C
+0x7FEA1A50
+0x7FEA1A54
+0x7FEA1A58
+0x7FEA1A5C
+0x7FEA1A60
+0x7FEA1A64
+0x7FEA1A80
+0x7FEA1A84
+0x7FEA1A88
+0x7FEA1A8C
+0x7FEA1A90
+0x7FEA1A94
+0x7FEA1A98
+0x7FEA1A9C
+0x7FEA1AA0
+0x7FEA1AA4
+----------<USB>--------------------
+0x7FEA2000				UsbdDriverEntry usb0 OHCI
+0x7FEA3000				UsbdDriverEntry 	 EHCI
+0x7FEA4000				UsbdDriverEntry usb2 OHCI
+0x7FEA5000				UsbdDriverEntry		 EHCI
+----------<FLASH>------------------ Sfcx base = 0x80000200_ea00c000
+0x7FEAC000				(SFCX_CONFIG) 
+0x7FEAC004				(SFCX_STATUS) 														(mmcx pio transfer size? 0x200)
+0x7FEAC008				(SFCX_COMMAND) SfcxStartNextPartialWriteCommand
+0x7FEAC00C				(SFCX_ADDRESS) SfcxStartNextPartialWriteCommand
+0x7FEAC010				(SFCX_DATA) 														(mmcx id 0 ?? 00000900 34474401 4D4D4330 00320101 || ....4GD.MMC0.2..)
+0x7FEAC014				(SFCX_LOGICAL) SfcxFinishFlashPassThrough 							(mmcx id 1)
+0x7FEAC018				(SFCX_PHYSICAL) SfcxFinishFlashPassThrough 							(mmcx id 2)
+0x7FEAC01C				(SFCX_DATA_DMAPHYADDR) SfcxStartFlashPassThrough // user target  	(mmcx id 3)
+0x7FEAC020				(SFCX_META_DMAPHYADDR) SfcxStartFlashPassThrough // spare target 	(mmcx possible data register when dma not used, maybe just access to mmc PRNG?)
+0x7FEAC024																					01F20000 mmcx device features?
+0x7FEAC028																					00000014
+0x7FEAC02C																					000E0007(ret)/000E0107(boot) (interrupt enable?)
+0x7FEAC030																					mmcx interrupt register (clear interrupt by load then store brx)
+0x7FEAC034																					8E7F0033
+0x7FEAC038																					8E7F0033
+0x7FEAC03C																					00000000
+0x7FEAC040																					022830B0
+0x7FEAC044																					00000000
+0x7FEAC048																					00000000
+0x7FEAC04C																					00000000
+0x7FEAC050																					00000000
+0x7FEAC054																					00000000
+0x7FEAC058																					MmcxDmaDescriptors phy address
+0x7FEAC05C																					
+0x7FEAC060-0x7FEAC0DC																		junk data, could be mmc serial or something inane																			
+0x7FEAC0E0																					0000040A
+0x7FEAC0E4																					00C50000  
+0x7FEAC0E8																					11003FFF
+0x7FEAC0EC																					000AFFFE/0000007E(boot)
+0x7FEAC0F0																					mmcx mode control? MmcxInitializeDeviceExtension checks byte &0x20 and sets a 1 in extension if it is set
+0x7FEAC0F4																					
+0x7FEAC0F8																					00000000
+0x7FEAC0FC																					00010000 mmcx status/version? HalpDetectFlashControllerType if not 0 hardware info is | 0x20000
+	// SFCX_COMMAND
+	#define PAGE_BUF_TO_REG			0x00 //Read page buffer to data register
+	#define REG_TO_PAGE_BUF			0x01 //Write data register to page buffer
+	#define LOG_PAGE_TO_BUF			0x02 //Read logical page into page buffer
+	#define PHY_PAGE_TO_BUF			0x03 //Read physical page into page buffer
+	#define WRITE_PAGE_TO_PHY		0x04 //Write page buffer to physical page
+	#define BLOCK_ERASE		   		0x05 //Block Erase
+	#define DMA_LOG_TO_RAM			0x06 //DMA logical flash to main memory
+	#define DMA_PHY_TO_RAM			0x07 //DMA physical flash to main memory
+	#define DMA_RAM_TO_PHY			0x08 //DMA main memory to physical flash
+	#define UNLOCK_CMD_0		  	0x55 //Unlock command 0; Kernel does 0x5500
+	#define UNLOCK_CMD_1		  	0xAA //Unlock command 1; Kernel does 0xAA00
+	// SFCX_CONFIG							>>17&3 	>>4&3
+	//Corona (16MB)  FlashConfig: 000C3000  2       0
+	//Trinity (16MB) FlashConfig: 00023010  1		1
+	//Jasper (256MB) FlashConfig: 008A3020  1		2
+	//Jasper (512MB) FlashConfig: 00AA3020  1		2
+	//Jasper (16MB)  FlashConfig: 00023010  1		1
+	//preJas (64MB)  FlashConfig: 01198030  0		3
+	//preJas (16MB)  FlashConfig: 01198010  0		1
+	// corona 4G?    FlashConfig: C0462002
+----------------------------------------------------------------
+
+// see HalDisableBusIrql
+0x8  PRIO_IPI_4
+0x10 PRIO_IPI_3
+0x14 HalpSMMInterrupt
+0x18 SfcxInterrupt/Mmcx
+0x20 SATA HDD
+0x24 SATA CDROM
+0x2C/0x34 OHCI
+0x30/0x38 EHCI
+0x40 XMA decoder
+0x44 audio
+0x4C NicIsr_CNicEmac
+0x54 VdpXPSIsr
+0x58 VdpGraphicsIsr
+0x60 PRIO_PROFILER
+0x64 HalpBiuErrorInterrupt (NB)
+0x68 HalpIocErrorInterrupt (NB)
+0x6C HalpFsbInterrupt
+0x70 PRIO_IPI_2
+0x74 PRIO_CLOCK
+0x78 PRIO_IPI_1
+
+
+(old external hv pages)
+0x0000000A01F58000		Dynamic Secdata 1 (two pointers to it in hv at init)
+0x0000000A01F5A000		Dynamic Secdata 3
+0x0000007601F20000		Decrypted Keyvault.bin 
+0x0000007601F24000		Decrypted Extended.bin 
+0x0000007601F28000		Crl.bin/Revoke Lock?
+0x0000007601F2C000		Allocated mem ptr?? should be a file
+0x0000007601F2E800		UnknOwn 0x1F420 in 8955.hv  0x1000 long
+0x0000007601F2F800		Decrypted Secdata.Bin
+0x0000007601F2FC00		Ip tv Session Key
+0x0000007601F2FD80		Object Handle Table
+0x0000007601F2FE00		Dynamic Secdata 2
+0x8000030001F30000		Revoke Static data
+
+
+	#; offset from 0x80000200_00000000, value to store at offset (endian swapped), or with BAR config reg 0x4
+#;	pci-pci bridge
+	.long 0xD0000010, 0xEA000000, 0x00000156
+#;	host bridge
+	.long 0xD0008010, 0xE0000000, 0x00000002
+#;	GPU
+	.long 0xD0010010, 0xEC800000, 0x00000002
+#;	1414:5801
+	.long 0xD0100010, 0xEA001800, 0x00000002
+#;	SATA
+	.long 0xD0108010, 0xEA001200, 0x00000006
+	.long 0xD0108014, 0xEA001220, 0x00000006
+	.long 0xD0110010, 0xEA001300, 0x00000006
+	.long 0xD0110014, 0xEA001320, 0x00000006
+#;	USB
+	.long 0xD0120010, 0xEA002000, 0x00000156
+	.long 0xD0121010, 0xEA003000, 0x00000106
+	.long 0xD0128010, 0xEA004000, 0x00000156
+	.long 0xD0129010, 0xEA005000, 0x00000106
+#;	Ethernet
+	.long 0xD0138010, 0xEA001400, 0x00000006
+#;	System flash controller
+	.long 0xD0140010, 0xEA00C000, 0x00000006	#; *(u32*)0x80000200_D0140010 = bwsap32(0xEA00C000); *(u32*)0x80000200_D0140004 = bswap32(bswap32(*(u32*)0x80000200_D0140004) | 0x6); // 0x80000200_EA00C000
+	.long 0xD0140014, 0xC8000000, 0x00000006	#; *(u32*)0x80000200_D0140014 = bwsap32(0xC8000000); *(u32*)0x80000200_D0140004 = bswap32(bswap32(*(u32*)0x80000200_D0140004) | 0x6); // 0x80000200_C8000000
+#;	Audio
+	.long 0xD0148010, 0xEA001600, 0x00000006
+#;	SMC
+	.long 0xD0150010, 0xEA001000, 0x00000002
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

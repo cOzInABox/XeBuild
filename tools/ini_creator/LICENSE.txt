@@ -1,0 +1,27 @@
+===================================================================
+ XBOX 360 XEBUILD INI CREATOR (ini_creator)
+===================================================================
+
+This application was originally built and iterated on but never
+released. The full source code is now being dedicated to the public
+domain.
+
+-------------------------------------------------------------------
+ LICENSE & WAIVER (CC0 1.0 Universal)
+-------------------------------------------------------------------
+To the extent possible under law, the author(s) have dedicated all
+copyright and related and neighboring rights to this software to the
+public domain worldwide. This software is distributed without any
+warranty.
+
+For full legal text, see <http://creativecommons.org>
+
+
+===================================================================
+ THIRD-PARTY CODE ACKNOWLEDGMENTS & CREDITS
+-------------------------------------------------------------------
+
+This project uses CRC32 code from:
+
+Copyright (C) 1986 Gary S. Brown.  You may use this program, or
+code or tables extracted from it, as desired without restriction.

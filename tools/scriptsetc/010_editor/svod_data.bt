@@ -1,0 +1,42 @@
+//--------------------------------------
+//--- 010 Editor v6.0 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+typedef uchar u8, BYTE;
+typedef uint16 u16, SHORT;
+typedef uint32 u32, DWORD, PVOID;
+typedef uint64 u64, QWORD;
+
+typedef struct _SVOD_HASH_ENTRY { 
+	BYTE Hash[0x14]; // 0x0 sz:0x14
+} SVOD_HASH_ENTRY; // size 20
+
+typedef struct _SVOD_LEVEL0_HASH_BLOCK { 
+	SVOD_HASH_ENTRY Entries[0xCC] <fgcolor=cBlack, bgcolor=0xCCCCFF>; // 0x0 sz:0xFF0
+	BYTE Reserved[0x10]; // 0xFF0 sz:0x10
+} SVOD_LEVEL0_HASH_BLOCK; // size 4096
+
+typedef struct _SVOD_LEVEL1_HASH_BLOCK { 
+	SVOD_HASH_ENTRY Entries[0xCB]; // 0x0 sz:0xFDC
+	SVOD_HASH_ENTRY NextFragmentHashEntry; // 0xFDC sz:0x14
+	BYTE Reserved[0x10]; // 0xFF0 sz:0x10
+} SVOD_LEVEL1_HASH_BLOCK; // size 4096
+
+typedef struct _SVOD_DATA { 
+	BYTE Data[0x1000]; // 0x0 sz:0x14
+} SVOD_DATA; // size 20
+
+typedef struct _SVOD_LEVEL0_DATA_BLOCK { 
+	SVOD_LEVEL0_HASH_BLOCK hashData; 
+	SVOD_DATA Data[0xCC];
+} SVOD_LEVEL0_DATA_BLOCK;
+
+local int64 datablocks;
+datablocks = (FileSize() - 0x1000)/(0xCC*0x1000);
+
+SVOD_LEVEL1_HASH_BLOCK masterHash <fgcolor=cBlack, bgcolor=0xCCFFCC>;
+SVOD_LEVEL0_DATA_BLOCK data[datablocks];

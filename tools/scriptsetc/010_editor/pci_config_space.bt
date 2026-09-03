@@ -1,0 +1,150 @@
+
+BitfieldRightToLeft();
+DisplayFormatHex();
+
+typedef struct StatusRegister {
+    USHORT Reserved                   : 3; 
+    USHORT InteruptStatus             : 1; 
+    USHORT CapabilitiesList           : 1; 
+    USHORT _66MhzCapable              : 1; 
+    USHORT Reserved                   : 1; 
+    USHORT FastBackToBackCapable      : 1; 
+    USHORT MasterDataParityError      : 1; 
+    USHORT DEVESEL_Timing             : 2; 
+    USHORT SignaledTargetAbort        : 1;
+    USHORT ReceivedTargetAbort        : 1;
+    USHORT ReceivedMasterAbort        : 1;
+    USHORT SignaledSystemError        : 1;
+    USHORT DetectedParityError        : 1;
+} StatusReg;
+
+typedef struct BISTRegister {
+    UCHAR       CompletionCode      : 4;
+    UCHAR       Reserved            : 2;
+    UCHAR       StartBIST           : 1;
+    UCHAR       BISTCapable         : 1;
+} BISTReg;
+
+typedef struct CommandRegister {
+    USHORT      IOSpace                     : 1;
+    USHORT      MemorySpace                 : 1;
+    USHORT      BusMaster                   : 1;
+    USHORT      SpecialCycle                : 1;
+    USHORT      MemoryWriteInvalidateEnable : 1;
+    USHORT      VGAPaletteSnoop             : 1;
+    USHORT      ParityErrorResponse         : 1;
+    USHORT      Reserved                    : 1;
+    USHORT      SERRNumberEnable            : 1;
+    USHORT      FastBackToBackEnable        : 1;
+    USHORT      InteruptDisable             : 1;
+    USHORT      Reserved                    : 5;
+} CommandReg;
+
+typedef struct HeaderTypeRegister {
+    UCHAR       HeaderType          : 7;
+    UCHAR       MultipleFunctions   : 1;
+} HeaderTypeReg;
+
+typedef struct MemorySpaceBAR {
+    ULONG   AlwaysZero          : 1;
+    ULONG   Type                : 2;
+    ULONG   Prefetchable        : 1;
+    ULONG   AlignedBaseAddress  : 28; // 16 byte aligned
+} mBAR;
+
+typedef struct IOSpaceBAR {
+    ULONG   AlwaysOne           : 1;
+    ULONG   Reserved            : 1;
+    ULONG   AlignedBaseAddress  : 30; // 4 byte aligned
+} ioBAR;
+
+// Stanfard Header
+ struct HeaderType_0 {
+      mBAR		BaseAddress[6];
+      ULONG		CardBUS_CIS_Pointer;
+      USHORT	        SussystemVendorID;
+      USHORT	        SubsystemID;
+      ULONG		ROMBaseAddress;
+      ULONG		Reserved2[2];
+      UCHAR		InterruptLine;
+      UCHAR		InterruptPin;
+      UCHAR		MinimumGrant;
+      UCHAR		MaximumLatency;
+    };
+
+// PCI-to-PCI Bridge Header
+ struct HeaderType_1 {
+        mBAR        BaseAddress[2];
+        UCHAR       PrimaryBusNumber;
+        UCHAR       SecondaryBusNumber;
+        UCHAR       SubordinateBusNumber;
+        UCHAR       SecondaryLatencyTimer;
+        UCHAR       IOBase;
+        UCHAR       IOLimit;
+        USHORT      SecondaryStatus;
+        USHORT      MemoryBase;
+        USHORT      MemoryLimit;
+        USHORT      PrefetchableMemoryBase;
+        USHORT      PrefetchableMemoryLimit;
+        ULONG       PrefetchableBaseUpper32;
+        ULONG       PrefetchableLimitUpper32;
+        USHORT      IOBaseUpper16;
+        USHORT      IOLimitUpper16;
+        UCHAR       CapabilityPointer;
+        UCHAR       Reserved[3];
+        ULONG       ExpansionROMBaseAddress;
+        UCHAR       InteruptLine;
+        UCHAR       InteruptPIN;
+        USHORT      BridgeControl;
+    };
+
+// CardBus Bridge Header
+ struct HeaderType_2 {
+        ULONG		    CardBusSocket;
+        UCHAR           CapabilitiesListOffset;
+        UCHAR           Reserved;
+        USHORT          SecondaryStatus;
+        UCHAR           PCIBusNumber;
+        UCHAR           CardBusBusNumber;
+        UCHAR           SubordinateBusNumber;
+        UCHAR           CardBusLatencyTimer;
+        mBAR            MemoryBaseAddress0;
+        ULONG           MemoryLimit0;
+        mBAR            MemoryBaseAdress1;
+        ULONG           MemoryLimit1;
+        ULONG           IOBaseAddress0;
+        ULONG           IOLimit0;
+        ULONG           IOBaseAddress1;
+        ULONG           IOLimit1;
+        UCHAR           InteruptLine;
+        UCHAR           InteruptPIN;
+        USHORT          BridgeControl;
+        USHORT          SubsystemDeviceID;
+        USHORT          SubsystemVendorID;
+        ULONG           _16bitPCCardLegacyModeBaseAddress;
+    };
+
+typedef struct _PCI_COMMON_CONFIG {
+  USHORT            VendorID;
+  USHORT            DeviceID;
+  CommandReg        Command;
+  StatusReg         Status;
+  UCHAR             RevisionID;
+  UCHAR             ProgIf;
+  UCHAR             SubClass;
+  UCHAR             BaseClass;
+  UCHAR             CacheLineSize;
+  UCHAR             LatencyTimer;
+  HeaderTypeReg     HeaderType;
+  BISTReg           BIST;
+  union {
+        switch(HeaderType.HeaderType) {
+        case 0:         HeaderType_0            type0;      break;
+        case 1:         HeaderType_1            type1;      break;
+        case 2:         HeaderType_2            type2;      break;
+        }
+  } headerType;
+  UCHAR  DeviceSpecific[192];
+} PCI_COMMON_CONFIG;
+
+PCI_COMMON_CONFIG pci[16]<optimize=false>;

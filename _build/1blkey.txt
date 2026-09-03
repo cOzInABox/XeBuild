@@ -1,0 +1,9 @@
+8CFC1DFDCF5C37A52AE427C397A45363 
+
+note this is dummy data, this file is ASCII text
+and only the first 32 characters will be used
+
+if you have problems with this file please
+check the first bytes of it in a hex editor to be sure
+they are indeed the key bytes rather than multibyte
+file identification bytes

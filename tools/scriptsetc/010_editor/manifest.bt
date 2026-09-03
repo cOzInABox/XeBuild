@@ -1,0 +1,90 @@
+//--------------------------------------
+//--- 010 Editor v6.0 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+BigEndian();
+BitfieldRightToLeft();
+typedef uchar u8, BYTE;
+typedef uint16 u16, SHORT;
+typedef uint32 u32, DWORD, PVOID;
+typedef uint64 u64, QWORD;
+
+typedef struct _SU_MAINIFEST_HEADER {
+	DWORD dwMagic; // 0 'XMNP'
+	BYTE baUnk1[0x20]; // 0x4
+	BYTE baDataSha[0x14]; // 0x24
+	BYTE baSignature[0x100]; // 0x38
+}SU_MAINIFEST_HEADER; // sz 0x138
+
+typedef struct _SU_CONTENT_HEADER {
+	DWORD dwMagic; // 0x0 'xsym' or 'xonm'
+	DWORD size; // 0x4
+	DWORD unk1; // 0x8 must be 1?
+	DWORD unk2; // 0xC
+	DWORD dwSchemaVer; // 0x10
+	DWORD dwFlashVer; // 0x14
+	QWORD qwTimeStamp; // 0x18
+	BYTE pad[8]; // 0x20
+} SU_CONTENT_HEADER; // sz 0x28
+
+typedef struct _SU_ITEM_ENTRY {
+	DWORD dwSrcNameOff; // 0 source name
+	DWORD dwPad1; // 0x4
+	DWORD dwFileSize; // 0x8
+	DWORD dwVersionOff; // 0xC pointer to version, used for folder on non-containers
+	DWORD dwFlags; // 0x10 flags?
+	DWORD dwPad2; // 0x14
+	DWORD dwEntryType; // 0x18
+	DWORD dwIntNameOff; // 0x1C internal name?
+	DWORD dwDestNameOff; // 0x20 destination name
+	BYTE unkHash[0x14]; // 0x24
+	BYTE dataHash[0x14]; // 0x38
+	DWORD dwContentType; // 0x4C ie 0x00008000
+	DWORD dwContentTitleId; // 0x50 ie 0xFFFE07DF
+	DWORD dwPad3; // 0x54
+	DWORD dwPad4; // 0x58
+	DWORD dwXContItemListOff; // 0x5C num items in container, followed by entry offsets for each item
+} SU_ITEM_ENTRY; // sz 0x60
+
+typedef struct _SU_ITEM_ENTRY_V1 {
+	DWORD dwSrcNameOff; // 0 source name
+	DWORD dwPad1; // 0x4
+	DWORD dwFileSize; // 0x8
+	DWORD dwVersionOff; // 0xC pointer to version, used for folder on non-containers
+	DWORD dwFlags; // 0x10 flags?
+	DWORD dwContentType; // 0x14 ie 0x00008000
+	DWORD dwContentTitleId; // 0x18 ie 0xFFFE07DF
+	BYTE dwPad2[8];
+	DWORD dwIntNameOff;
+	DWORD dwDestNameOff;
+	DWORD dwPad3;
+	DWORD dwXContItemListOff;
+	BYTE dwPad4[16];
+} SU_ITEM_ENTRY_V1; // sz 0x44
+
+typedef struct _SU_ITEM_LIST(DWORD ver) {
+	DWORD dwSizeOfStruct;
+	DWORD dwNumEntries;
+	if(ver == 1)
+		SU_ITEM_ENTRY_V1 ents[dwNumEntries];
+	else if(ver == 3)
+		SU_ITEM_ENTRY ents[dwNumEntries];
+} SU_ITEM_LIST; // sz 0x68
+
+typedef struct _SU_MANIFEST_BODY {
+	SU_CONTENT_HEADER cont;
+	SU_ITEM_LIST items(cont.dwSchemaVer);
+} SU_MANIFEST_BODY;
+
+typedef struct _SU_MANIFEST {
+	SU_MAINIFEST_HEADER header;
+	SU_MANIFEST_BODY body;
+} SU_MANIFEST;
+
+local u32 temp<hidden=true>;
+
+SU_MANIFEST hdr;

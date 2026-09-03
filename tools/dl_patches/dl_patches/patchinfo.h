@@ -1,0 +1,42 @@
+#ifndef __PATCHINFO_H
+#define __PATCHINFO_H
+
+#define PATCH_MASK_JTAG			(0x80000000)
+#define PATCH_MASK_GLITCH		(0x40000000)
+// #define PATCH_MASK_GLITCH2	(PATCH_MASK_GLITCH|0x20000000)
+#define PATCH_MASK_GLITCH2		(0x20000000)
+#define PATCH_MASK_GLITCH2MFG	(0x10000000)
+
+typedef enum {
+	CONSOLE_XENON = 0,
+	CONSOLE_ZEPHYR,
+	CONSOLE_FALCON,
+	CONSOLE_JASPER,
+	CONSOLE_TRINITY,
+	CONSOLE_CORONA,
+	CONSOLE_WINCHESTER,
+} CONSOLE_TYPE;
+
+typedef struct _PATCHES_INFO {
+	DWORD consoleType;
+	DWORD size;
+	DWORD offset;
+	DWORD dummy;
+} PATCHES_INFO, *PPATCHES_INFO;
+
+typedef struct _PATCHINFO_HEADER {
+	DWORD headerSize;
+	DWORD numEntries;
+	DWORD dummy[2];
+	PATCHES_INFO inf[1];
+} PATCHINFO_HEADER, *PPATCHINFO_HEADER;
+
+typedef struct _PATCHES_LIST {
+	PBYTE data;
+	DWORD len;
+	const char* filename;
+	const char* altname;
+	DWORD type;
+} PATCHES_LIST, *PPATCHES_LIST;
+
+#endif

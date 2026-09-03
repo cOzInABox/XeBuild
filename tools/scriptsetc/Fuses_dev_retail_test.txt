@@ -1,0 +1,33 @@
+none
+fuseset 00: C000000000000000
+fuseset 01: 0000000000000000
+
+devkit
+fuseset 00: C0FFFFFFFFFFFFFF
+fuseset 01: 0F0F0F0F0F0F0F0F
+
+retail
+fuseset 00: C0FFFFFFFFFFFFFF
+fuseset 01: 0F0F0F0F0F0F0FF0
+
+testkit
+fuseset 00: C0FFFFFFFFFFFFFF
+fuseset 01: 0F0F0F0F0F0FF00F
+
+slim retail (trinity/corona)
+fuseset 00: C0FFFFFFFFFFFFFF
+fuseset 01: 0F0F0F0F0F0FF0F0
+
+devkit
+fuseset 01: 0F0F0F0F0F0F0F0F
+retail
+fuseset 01: 0F0F0F0F0F0F0FF0
+testkit
+fuseset 01: 0F0F0F0F0F0FF00F
+slim retail (trinity/corona)
+fuseset 01: 0F0F0F0F0F0FF0F0
+
+dev 0F0F0F0F0F0F0F0F
+tes 0F0F0F0F0F0FF00F
+ret 0F0F0F0F0F0F0FF0
+sli 0F0F0F0F0F0FF0F0

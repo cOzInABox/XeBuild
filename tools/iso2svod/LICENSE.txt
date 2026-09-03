@@ -1,0 +1,45 @@
+===================================================================
+ XBOX 360 ISO to SVOD IMAGE CONVERSION SOURCE CODE (iso2svod)
+===================================================================
+
+This application was originally built and iterated on but never
+released. The full source code is now being dedicated to the public
+domain.
+
+-------------------------------------------------------------------
+ LICENSE & WAIVER (CC0 1.0 Universal)
+-------------------------------------------------------------------
+To the extent possible under law, the author(s) have dedicated all
+copyright and related and neighboring rights to this software to the
+public domain worldwide. This software is distributed without any
+warranty.
+
+For full legal text, see <http://creativecommons.org>
+
+
+===================================================================
+ THIRD-PARTY CODE ACKNOWLEDGMENTS & CREDITS
+-------------------------------------------------------------------
+
+Uses libiconv, libxml2, and zlib, not included with this source release.
+
+Thanks to the respective projects that created and maintain these
+libraries!
+
+-------------------------------------------------------------------
+
+libmspack -- a library for working with Microsoft compression formats.
+ * (C) 2003-2013 Stuart Caie <kyzer@4u.net>
+ *
+ * libmspack is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU Lesser General Public License (LGPL) version 2.1
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 

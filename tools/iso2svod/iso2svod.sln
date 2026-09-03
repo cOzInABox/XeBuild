@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iso2svod", "source\iso2svod.vcxproj", "{FF6E9C65-DDC2-4C03-876B-BA74B9A717F1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XeCrypt", "..\..\XeCrypt\XeCrypt.vcxproj", "{D710E01D-CC22-4989-BA94-3058CC146DA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF6E9C65-DDC2-4C03-876B-BA74B9A717F1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FF6E9C65-DDC2-4C03-876B-BA74B9A717F1}.Debug|Win32.Build.0 = Debug|Win32
+		{FF6E9C65-DDC2-4C03-876B-BA74B9A717F1}.Release|Win32.ActiveCfg = Release|Win32
+		{FF6E9C65-DDC2-4C03-876B-BA74B9A717F1}.Release|Win32.Build.0 = Release|Win32
+		{D710E01D-CC22-4989-BA94-3058CC146DA5}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D710E01D-CC22-4989-BA94-3058CC146DA5}.Debug|Win32.Build.0 = Debug|Win32
+		{D710E01D-CC22-4989-BA94-3058CC146DA5}.Release|Win32.ActiveCfg = Release|Win32
+		{D710E01D-CC22-4989-BA94-3058CC146DA5}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

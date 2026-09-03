@@ -1,0 +1,3 @@
+[submodule "XeCrypt"]
+	path = XeCrypt
+	url = https://github.com/cOzInABox/XeCrypt

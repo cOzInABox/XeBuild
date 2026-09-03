@@ -1,0 +1,373 @@
+//--------------------------------------
+//--- 010 Editor v6.0 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+BigEndian();
+BitfieldRightToLeft();
+typedef uchar u8;
+typedef uint16 u16;
+typedef uint32 u32;
+typedef uint64 u64;
+
+typedef struct _XECRYPT_SIG{
+	u64 aqwPad[0x1C];
+	u8 bOne;
+	u8 abSalt[0xA];
+	u8 abHash[0x14];
+	u8 bEnd;
+} XECRYPT_SIG; // 256
+
+typedef struct _XECRYPT_RSA{
+	u32 cqw;
+	u32 dwPubExp;
+	u64 qwReserved;
+} XECRYPT_RSA; // 16
+
+typedef struct _XECRYPT_RSAPUB_2048{
+	XECRYPT_RSA Rsa;
+	u64 aqwM[0x20];
+} XECRYPT_RSAPUB_2048; // 272
+
+typedef struct _BLDR{
+	u16 Magic; // 0
+	u16 Build; // 2
+	u16 Qfe; // 4
+	u16 Flags; // 6
+	u32 Entry; // 8
+	u32 Size; // 12
+} BLDR;
+
+typedef struct _BLDR_FLASH{
+	BLDR header; // 16 - 0
+	char achCopyright[0x40]; // 16
+	u8 abReserved[0x10]; // 80
+	u32 dwKeyVaultSize; // 96
+	u32 dwSysUpdateAddr; // 100
+	u16 wSysUpdateCount; // 104
+	u16 wKeyVaultVersion; // 106
+	u32 dwKeyVaultAddr; // 108
+	u32 dwSysUpdateSlotSize; // 112 dwFileSystemAddr << actually the size of one patch slot
+	u32 dwSmcConfigAddr; // 116
+	u32 dwSmcBootSize; // 120
+	u32 dwSmcBootAddr; // 124
+} BLDR_FLASH; // 128
+
+typedef struct BLDR_DEV_KDNET{
+	u16 wKdNetMagic;
+	u16 unused1;
+	u32 unused2;
+	u32 dwKdNetDataOffset;
+	u32 dwKdNetDataSize;
+	u32 unknown1;
+	u32 KdNetXboxIp;
+	u8 KdNetMacID[6];
+	u16 KdNetPort;
+	u32 KdNetHostIp;
+	u8 padding[24];
+};
+
+typedef struct _BLDR_2BL_CB{ // CB/SB
+	BLDR header; // 16 - 0
+	u8 abNonce[0x10]; // 16
+//	union {
+//		struct {
+		u32 dwUpdateSequenceBase; // 32
+		u8 abReserved[0xC]; // 36
+		u8 abPerBoxDigest[0x10]; // 48
+//		};
+//		u8 abPerBoxData[0x20]; // 32
+//		u64 aqwPerBoxData[0x4]; // 32
+//	};
+	XECRYPT_SIG Sig; // 256 - 64
+	u8 abAesInvData[0x110]; // 272 - 320
+	u64 qwPostOutAddr; // 592
+	u64 qwSbFlashAddr; // 600
+	u64 qwSocMmioAddr; // 608
+	XECRYPT_RSAPUB_2048 RsaPub; //272 - 616
+	u8 abNonce3bl[0x10]; // 888
+	u8 abSalt3bl[0xA]; // 904
+	u8 abSalt4bl[0xA]; // 914
+	u8 abDigest4bl[0x14]; // 924
+//	union Sequence{
+//		struct SequenceSt{
+			u8 bConsoleType; // 944
+			u8 bConsoleSequence; // 945
+			u16 wConsoleSequenceAllow; // 946
+//		};
+//		u32 dwConsoleTypeSeqAllow; // 944
+//	};
+	u8 pad[0xC];
+} BLDR_2BL; // 948+padding
+
+typedef struct _BLDR_3BL_CC{ // SC
+	BLDR header; // 16 - 0
+	u8 abNonce[0x10]; // 16
+	XECRYPT_SIG Sig; // 256 - 32
+} BLDR_3BL; // 288
+
+typedef struct _BLDR_4BL_CD{ // CD/SC
+	BLDR header; // 16 - 0
+	u8 abNonce[0x10]; // 16
+//	union{
+		XECRYPT_SIG Sig; // 256 - 32
+//		u8 abPerBoxData[0x100]; // 256 - 32
+//		u64 aqwPerBoxData[0x20]; // 256 - 32
+//		struct{
+//			u32 dwUpdateSequenceBase; // 32
+//			u8 abReserved[0xFC]; // 36
+//		};
+//	};
+	XECRYPT_RSAPUB_2048 RsaPub; // 288
+	u8 abNonce6bl[0x10]; // 560
+	u8 abSalt6bl[0xA]; // 576
+	u8 abPadding[0x2]; // 586
+	u8 abDigest5bl[0x14]; // 588
+} BLDR_4BL; // 608
+
+typedef struct _BLDR_5BL_CE{  // _BLDR_LZX_IMAGE
+	BLDR header; // 16 - 0
+	u8 abNonce[0x10]; // 16
+	u64 qwImageAddr; // 32
+	u32 dwImageSize; // 40
+	u32 dwPad; // 44
+} BLDR_5BL; // 48
+
+typedef struct _BLDR_6BL_PERBOX{
+	u16 cBlocks; // 0
+	u32 aBlocks[0xDF]; // 2
+} BLDR_6BL_PERBOX; // 448
+
+typedef struct _BLDR_6BL_CF{
+	BLDR header; // 16 - 0
+	u32 dwBuildQfeSource; // 16
+	u32 dwBuildQfeTarget; // 20
+	u8 abReserved1[0x4]; // 24
+	u32 dwSize7bl; // 28
+	u8 abNonce[0x10]; // 32
+	// union{
+		// struct{
+			u16 numberOfIndirects;
+			u16 indirectionArray[223];
+			//u8 abPerBoxOpaque[0x1C0]; // 448 - 48
+			u8 abReserved2[0x2B]; // 43 - 496
+			u8 bUpdateSlot; // 539
+			u8 abCbPairingData[3]; // 540
+			u8 bLdv; // 540
+			u8 abPerBoxDigest[0x10]; // 544
+		// };
+		// u8 abPerBoxData[0x200]; // 512 - 48
+		// u64 aqwPerBoxData[0x40]; // 512 - 48
+	// };
+	XECRYPT_SIG Sig; // 560
+	u8 abNonce7bl[0x10]; // 816
+	u8 abDigest7bl[0x14]; // 832
+	u8 padding[0xc];
+} BLDR_6BL; // 854+padding
+
+typedef struct _BLDR_7BL_CG{
+	BLDR header; // 16 - 0
+	u8 abNonce[0x10]; // 16
+	u32 dwSourceImageSize; // 32
+	u8 abSourceDigest[0x14]; // 36
+	u32 dwTargetImageSize; // 56
+	u8 abTargetDigest[0x14]; // 60
+} BLDR_7BL; // 80
+
+typedef struct _FanOverride{ // used by _XCONFIG_STATIC_SETTINGS // 01111111 <- normally disabled as 0x7F
+	u8 Speed : 7; // says 0 bit 7
+	u8 Enable : 1; // says 7 is bit 0
+} FanOverride; // 1 byte
+
+typedef struct _TempCalData{ // used by _XCONFIG_STATIC_SETTINGS
+	u16 Gain;
+	u16 Offset; 
+} TempCalData; // 4 bytes
+
+typedef struct _Temperature{ // used by _XCONFIG_STATIC_SETTINGS
+	TempCalData Cpu;
+	TempCalData Gpu;
+	TempCalData Edram;
+	TempCalData Board; // 16 bytes
+} Temperature;
+
+typedef struct _Thermal{ // used by _XCONFIG_STATIC_SETTINGS
+	u8 Cpu;
+	u8 Gpu;
+	u8 Edram; // 3 bytes
+} Thermal;
+
+typedef struct _Viper{ // used by _XCONFIG_STATIC_SETTINGS
+	u8 GpuVoltageNotSetting : 1; // bit 7
+	u8 MemoryVoltageNotSetting : 1; // bit 6 (bit 5 thru 0 unused
+	//u8 unknown : 6; // 1 byte
+	u8 GpuTarget;
+	u8 MemoryTarget;
+	u8 CheckSum;	
+} Viper; // 4 bytes
+
+typedef struct _ThermalCalData{ // used by _XCONFIG_STATIC_SETTINGS
+	Temperature therm; // 16 bytes
+	char AnaFuseValue;
+	Thermal SetPoint; // 3 bytes
+	Thermal Overload; // 3 bytes
+} ThermalCalData;
+
+typedef struct _SMCBlock{ // STATIC key 0x2 256 bytes // used by _XCONFIG_STATIC_SETTINGS
+	u8 StructureVersion;
+	u8 ConfigSource;
+	char ClockSelect;
+	FanOverride fanOrCpu; // 1 byte
+	FanOverride fanOrGpu; // 1 byte
+	char pad1[1];
+	char unknownBits : 2;// 1 byte total for this bitfield
+	char ScreenToolExecutionCount : 2;
+	char ScreenToolFinished : 1;
+	char ScreenToolStarted : 1;
+	char UseTempCalDefaults : 1;
+	char RadioEnable : 1; 
+	char pad2[3];
+	ThermalCalData mainTemp; // 23 bytes
+	u8 pad3[1];
+	Viper vFlags;
+	u8 pad4[190];
+	ThermalCalData backupTemp; // 23 bytes
+	u8 pad5[3];
+	u8 DoNotUse[2];
+} SMCBlock;
+
+typedef struct _SMC_CONFIG(int wsp){ // wsp, with spare data
+	u32 CheckSum; // *** see below ***
+	u32 Version;
+	char FirstPowerOnDate[5]; // key 0x1 5 bytes
+	char reserved;
+	SMCBlock SMCConfig;  // key 0x2 256 bytes
+    if(wsp)
+    {
+	    u8 pad[0xF2]; // there is some data in that, but not interested in it
+        u8 spareData[0x10]; // this isn't here when spare data isn't present in the dump
+        u8 pad2[0x20];
+    }
+    else
+    	u8 pad[0x112]; // there is some data in that, but not interested in it
+	u8 macAddr[6];
+	u8 pad3[2];
+	u32 AVRegion;
+	u16 GameRegion;
+	u8 pad4[6];
+	u32 DVDRegion;
+	u8 resetKey[4];
+} SMC_CONFIG; // XConfigStaticSettings; 270 bytes, 280 with spare
+
+typedef struct _MMC_MOBILE_ENTRY{
+    u16 wSector;
+    u16 wSize;
+}MMC_MOBILE_ENTRY;
+
+typedef struct _MMC_ANCHOR{
+    u8 abSha1Hash[0x14];
+    u32 unk1;
+    u32 dwVersion;
+    MMC_MOBILE_ENTRY fsBitmap;
+    MMC_MOBILE_ENTRY mobiles[7];
+}MMC_ANCHOR;
+
+local u32 temp<hidden=true>;
+local u32 devk<hidden=true>;
+local u32 ismmc<hidden=true>;
+
+// convert a raw flash offset to one with a spare
+u32 ConFlOff(u32 val)
+{
+    if(ismmc)
+        return val;
+    return (((val/512)*528)+(val%512));
+}
+
+// bl sizes don't include 0x10 byte alignment for RC4 line size
+u32 Align16(u32 val)
+{
+    return ((val+0xF)&~0xF);
+}
+
+BLDR_FLASH fhead;
+if(ReadShort(0x80)== 0xCA4A)
+{
+    FSeek(0x80);
+    BLDR_DEV_KDNET KdNetSettings;
+}
+if(FileSize() == 0x3000000) // filter out corona 4G non-overdump
+    ismmc = 1;
+
+// smc binary
+FSeek(ConFlOff(fhead.dwSmcBootAddr));
+BYTE SmcBin[ConFlOff(fhead.dwSmcBootSize)];
+// keyvault binary
+FSeek(ConFlOff(fhead.dwKeyVaultAddr));
+BYTE KeyVault[ConFlOff(fhead.dwKeyVaultSize)];
+// CB/SB/CBA
+temp = fhead.header.Entry;
+FSeek(ConFlOff(temp));
+BLDR Cb_2BL;
+temp += Align16(Cb_2BL.Size);
+FSeek(ConFlOff(temp));
+if(Cb_2BL.Magic == 0x5342)// 'SB' for devkit
+{
+    BLDR Cc_3BL;
+    devk = 1;
+    temp += Align16(Cc_3BL.Size);
+}
+else if(Cb_2BL.Flags&0x800)// retail dual CB
+{
+    BLDR CbB_2BL;
+    temp += Align16(CbB_2BL.Size);
+}
+FSeek(ConFlOff(temp));
+BLDR Cd_4BL;
+temp += Align16(Cd_4BL.Size);
+FSeek(ConFlOff(temp));
+BLDR Ce_5BL;
+
+// patch slots, there can be more than 2 according to the header, but oh well
+// if(devk == 0)
+// {
+    FSeek(ConFlOff(fhead.dwSysUpdateAddr));
+    BLDR Cf_6BL_Slot1;
+    temp = fhead.dwSysUpdateAddr+fhead.dwSysUpdateSlotSize;
+    FSeek(ConFlOff(temp));
+    BLDR Cf_6BL_Slot2;
+// }
+
+// based on file size, locate the flash config
+if(FileSize() == 0x1080000) // 16M dump
+{
+    FSeek(ConFlOff(0x0F7C000));
+    SMC_CONFIG SmcConfig(1);
+}
+else if(FileSize() == 0x3000000) // corona 4G mmc
+{
+    FSeek(ConFlOff(0x2fe8000));
+    MMC_ANCHOR MmcAnch1;
+    FSeek(ConFlOff(0x2fec000));
+    MMC_ANCHOR MmcAnch2;
+    FSeek(ConFlOff(0x2ffc000));
+    SMC_CONFIG SmcConfig(0);
+    
+}
+else if (FileSize() >= 0x4200000) // 64M dump
+{
+    if(devk) // small block
+    {
+        FSeek(ConFlOff(0x3dfc000));
+        SMC_CONFIG SmcConfig(1);
+//        SMC_CONFIG_WSP SmcConfig;
+    }
+    else // big block
+    {
+        FSeek(ConFlOff(0x3be0000));
+        SMC_CONFIG SmcConfig(1);
+    }
+}

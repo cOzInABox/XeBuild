@@ -1,0 +1,155 @@
+HrGetSystemInfo in dmserv
+
+XboxHardwareInfo.BldrFlags
+==============================
+0x0001 BLDRF_STOCK 				update/mfg mode (if set)
+0x0002 BLDRF_SECURE 			update/mfg mode (if set) (retail normally set)
+0x0004 BLDRF_CONSOLE_TYPE 		(retail normally set)
+0x0008 BLDRF_CONSOLE_SEQUENCE 	update/mfg mode (if not set) (retail normally set)
+0x0010 BLDRF_UNIQUE_ID 			(retail normally set)
+0x0020 BLDRF_SIGNED_KEYVAULT 	kv hash check required
+0x0040 BLDRF_256MB
+0x0080 BLDRF_1GB 				MmDevkitMemoryPresent (if unset 1G memory) XampAllocCommitAndCreateHeap
+0x0100 							if unset kdLite (devkit)
+0x0200 BLDRF_SHADOW 			shadowboot if zero (devkit), hide bootanim if 0
+0x0400 BLDRF_SHADOW_CD 			boot from media (devkit) XexpComputeImageMediaTypes (fakes it?) CXamTitleLoader::IsMediaDetectRequired XamIsBootingForRecovery
+0x0800 BLDRF_DD1 				new bootloader (dual cb) flag???
+0x1000 BLDRF_UPDATE_1_APPLIED 	slot0 p1 (retail normally sets one of the patch slots active)
+0x2000 BLDRF_UPDATE_2_APPLIED 	slot1 p2
+0x4000 BLDRF_UPDATE_PERMANENT 	system update related (retail normally set)
+0x8000 BLDRF_UPDATE_SEQUENCE 	lock system update (retail normally set)
+
+1110000000011110 0xe01e jtag falcon, patch slot 2 (at hv entry, kv hash check disabled by bit 0x20) 
+		2,4,8,10,2000,4000,8000
+1101100000011110 0xd81e slim (running dash, no hdd)
+		2,4,8,10,800,1000,4000,8000
+1101000001010000 0xd050 rgh falcon (mfg mode)
+		10,40,1000,4000,8000
+
+XboxHardwareInfo.Flags
+==============================
+0x00000003 platform (0=alpha, 1=mongrel, 2=shiva, 3=waternoose) 0x1 = has medusa daughterboard
+0x00000008 if set skips noting argon errs (devkit), bootanim?
+0x00000010 CXnIp::IpIsSecurityBypassed CXnIp::IpIsPeerEncryptionDisabled
+0x00000020 hdd presence 1=present
+0x00000040
+0x00000080 if set bugcheck is fatal or kd is enabled
+0x00000100 if set bugcheck is breakpoint
+0x00000200 if not 0 on devkit, causes a twi in XamInitXenonButton
+0x00000400 media restriction
+0x00000800 vd related
+0x00001000 staging mode on (XamSetStaging), reads argon errors in xam	HalGetNotedArgonErrors
+0x00002000 power mode related
+0x00004000 xenon button disabled
+0x00010000 1GB ram (pixdump partition related)
+0x00020000 mmcx (nand mu) 1= present (pci bridge > 0x70 and value at 0x7FEAC0FC/corona mmc controller reg? is nonzero)
+0x02000000 1 if devkit, otherwise testkit/retail
+0xF0000000 system type (0=xenon, 1=zephyr, 2=falcon, 3=jasper, 4=trinity, 5=corona, 6=winchester, ?7?=ridgeway)
+
+0x02000000 = 1 = devkit
+0x00010000   = 4 = 1G RAM
+
+xekeysgetstatus
+==============================
+0x8 manufacturing mode
+
+sk1080 xekeysgetstatus
+0x1: First Fuseline Burned In	
+0x2: Keys Initialized			
+0x8: Mfg mode Related
+0x10: Keyvault Read				
+0x40: Region Locked				
+0x80:							
+0x100: Keyvault Loaded			
+0x200: Mfg Mode Related
+0x800: Dvd Page Verified		
+0x1000: Region 0x7FFF
+0x8000:	 Default Flag			
+0x10000: Revocation List Set	
+0x20000: Secdata Load Initiated	
+0x100000: Key 0x45 Verified      
+0x200000: Secdata/Crl Loaded 	
+0x1000000: Fcrt Loaded
+0x2000000: Attempted DAE Load
+
+On slim arcade 4G XEKEY_POLICY_FLASH_SIZE is set to 0xFFFFFFFF (which is... 4GB-1) and XEKEY_POLICY_BUILTIN_USBMU_SIZE is set to 0x00000000
+On jasper 256M    XEKEY_POLICY_FLASH_SIZE is set to 0x0006F100 and XEKEY_POLICY_BUILTIN_USBMU_SIZE is set to 0x00000000
+On Jasper 512M    XEKEY_POLICY_FLASH_SIZE is set to 0x000E5600 and XEKEY_POLICY_BUILTIN_USBMU_SIZE is set to 0x00000000
+
+jasper dev on retail
+300002b7 06600000 00000000 5e4e0016
+Flags              : 0x300002b7
+NumberOfProcessors : 0x06
+PCIBridgeRevisionID: 0x60
+6 reserved bytes   : 0x 00 00 00 00 00 00
+BldrMagic          : 0x5e4e
+BldrFlags          : 0x0016 0b00010110
+
+falcon devkit
+200002b7 06310000 00000000 5e4e001e
+Flags              : 0x200002b7
+NumberOfProcessors : 0x06
+PCIBridgeRevisionID: 0x31
+6 reserved bytes   : 0x 00 00 00 00 00 00
+BldrMagic          : 0x5e4e
+BldrFlags          : 0x001e 0b00011110
+
+
+falcon, hdd in
+x360>hvpeek 90 32 1
+dumping 32 bytes
+DATA DUMP START>
+0000000000000090: E0 1E
+<DATA DUMP END
+x360>hwinfo
+Flags              : 0x20000627
+NumberOfProcessors : 0x06
+PCIBridgeRevisionID: 0x31
+6 reserved bytes   : 0x 00 00 00 00 00 00
+BldrMagic          : 0x4e4e
+BldrFlags          : 0xe01e
+
+falcon, no hdd
+x360>hvpeek 90 16 1
+dumping 16 bytes
+DATA DUMP START>
+0000000000000090: E0 1E                                           || à.
+<DATA DUMP END
+x360>hwinfo
+Flags              : 0x20000607
+NumberOfProcessors : 0x06
+PCIBridgeRevisionID: 0x31
+6 reserved bytes   : 0x 00 00 00 00 00 00
+BldrMagic          : 0x4e4e
+BldrFlags          : 0xe01e
+x360>
+
+jasper 256, hdd in
+x360>hvpeek 90 16 1
+dumping 16 bytes
+DATA DUMP START>
+0000000000000090: E0 1E                                           || à.
+<DATA DUMP END
+x360>hwinfo
+Flags              : 0x30000627
+NumberOfProcessors : 0x06
+PCIBridgeRevisionID: 0x60
+6 reserved bytes   : 0x 00 00 00 00 00 00
+BldrMagic          : 0x4e4e
+BldrFlags          : 0xe01e
+x360>
+
+jasper 512, hdd out
+x360>hvpeek 90 16 1
+dumping 16 bytes
+DATA DUMP START>
+0000000000000090: E0 1E                                           || à.
+<DATA DUMP END
+x360>hwinfo
+Flags              : 0x30000607
+NumberOfProcessors : 0x06
+PCIBridgeRevisionID: 0x60
+6 reserved bytes   : 0x 00 00 00 00 00 00
+BldrMagic          : 0x4e4e
+BldrFlags          : 0xe01e
+x360>

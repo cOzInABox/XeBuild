@@ -1,0 +1,18 @@
+===================================================================
+ UTILITY TO CONVERT BINARIES TO C HEADERS (bin2c2)
+===================================================================
+
+This application was originally built and iterated on but never
+released. The full source code is now being dedicated to the public
+domain.
+
+-------------------------------------------------------------------
+ LICENSE & WAIVER (CC0 1.0 Universal)
+-------------------------------------------------------------------
+To the extent possible under law, the author(s) have dedicated all
+copyright and related and neighboring rights to this software to the
+public domain worldwide. This software is distributed without any
+warranty.
+
+For full legal text, see <http://creativecommons.org>
+

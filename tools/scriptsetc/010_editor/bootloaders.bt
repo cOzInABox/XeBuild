@@ -1,0 +1,232 @@
+//--------------------------------------
+//--- 010 Editor v6.0 Binary Template
+//
+// File:
+// Author:
+// Revision:
+// Purpose:
+//--------------------------------------
+BigEndian();
+BitfieldRightToLeft();
+typedef uchar u8;
+typedef uint16 u16;
+typedef uint32 u32;
+typedef uint64 u64;
+
+
+typedef struct {
+    u32           cqw;                // Number of QWORD digits in modulus
+    u32           dwPubExp;           // Public exponent
+    u64           qwReserved;         // Reserved (was qwMI)
+} XECRYPT_RSA;
+
+typedef struct {
+    XECRYPT_RSA     Rsa;                // Common header
+    u64           aqwM[32];           // [BnQwNe] Modulus
+} XECRYPT_RSAPUB_2048;
+
+typedef struct {                        // [BnQwBe]
+    u64           aqwPad[28];         // Padding
+    u8            bOne;               // 0x01
+    u8            abSalt[10];         // Salt
+    u8            abHash[20];         // Hash
+    u8            bEnd;               // 0xBC
+} XECRYPT_SIG;
+
+typedef struct _BLDR{
+	u16 Magic; // 0
+	u16 Build; // 2
+	u16 Qfe; // 4
+	u16 Flags; // 6
+	u32 Entry; // 8
+	u32 Size; // 12
+} BLDR;
+
+/* ****** for CB ***** */
+typedef struct BLDR_2BL{ // CB/SB
+	BLDR header;
+	u8 abNonce[0x10]; // 16
+//	union {
+//		struct {
+		u32 dwUpdateSequenceBase; // 32
+		u8 abReserved[0xC]; // 36
+		u8 abPerBoxDigest[0x10]; // 48
+//		};
+//		u8 abPerBoxData[0x20]; // 32
+//		u64 aqwPerBoxData[0x4]; // 32
+//	};
+	XECRYPT_SIG Sig; // 256 - 64
+	u8 abAesInvData[0x110]; // 272 - 320
+	u64 qwPostOutAddr; // 592
+	u64 qwSbFlashAddr; // 600
+	u64 qwSocMmioAddr; // 608
+	XECRYPT_RSAPUB_2048 RsaPub; //272 - 616
+	u8 abNonce3bl[0x10]; // 888
+	u8 abSalt3bl[0xA]; // 904
+	u8 abSalt4bl[0xA]; // 914
+	u8 abDigest4bl[0x14]; // 924
+//	union Sequence{
+//		struct SequenceSt{
+			u8 bConsoleType; // 944
+			u8 bConsoleSequence; // 945
+			u16 wConsoleSequenceAllow; // 946
+//		};
+//		u32 dwConsoleTypeSeqAllow; // 944
+//	};
+	u8 pad[0xC];
+}; // 948+padding
+
+/* ****** for CC ***** */
+typedef struct BLDR_3BL{ // SC
+	BLDR header;
+	u8 abNonce[0x10]; // 16
+	XECRYPT_SIG Sig; // 256 - 32
+} ; // 288
+
+/* ****** for CD ***** */
+typedef struct BLDR_4BL{ // CD/SC
+	BLDR header;
+	u8 abNonce[0x10]; // 16
+//	union{
+		XECRYPT_SIG Sig; // 256 - 32
+//		u8 abPerBoxData[0x100]; // 256 - 32
+//		u64 aqwPerBoxData[0x20]; // 256 - 32
+//		struct{
+//			u32 dwUpdateSequenceBase; // 32
+//			u8 abReserved[0xFC]; // 36
+//		};
+//	};
+	XECRYPT_RSAPUB_2048 RsaPub; // 288
+	u8 abNonce6bl[0x10]; // 560
+	u8 abSalt6bl[0xA]; // 576
+	u8 abPadding[0x2]; // 586
+	u8 abDigest5bl[0x14]; // 588
+}; // 608
+
+/* ****** for CE ***** */
+typedef struct CeLzxEntry {
+    ushort compSz;
+    ushort decompSz;
+    if(compSz > 1)
+        uchar pdat[compSz];
+};
+
+string CompSzCeComment( CeLzxEntry& cmp, u32 curr )
+{
+	string str;
+	sprintf(str, "0x%x-0x%x", curr, curr+cmp.decompSz);
+	return str;
+}
+
+typedef struct BLDR_5BL{  // _BLDR_LZX_IMAGE
+	BLDR header;
+	u8 abNonce[0x10]; // 16
+	u64 qwImageAddr; // 32
+	u32 dwImageSize; // 40
+	u32 dwPad; // 44
+}; // 48
+
+/* ****** for CF ***** */
+
+typedef struct CfPatchEntry {
+    uint oldAddr;
+    uint newAddr;
+    ushort decomSz;
+    ushort compSz;
+    if(compSz > 1)
+        uchar pdat[compSz];
+};
+
+string CompSzCfComment( CfPatchEntry& cmp )
+{
+    if( cmp.compSz == 0 )
+        return "zero fill";
+    else if (cmp.compSz == 1)
+        return "byte copy";
+    else
+        return "delta patch";
+}
+
+typedef struct BLDR_6BL_PERBOX{
+	u16 cBlocks; // 0
+	u16 aBlocks[0xDF]; // 2
+}; // 448
+
+typedef struct BLDR_6BL{ // CF
+	BLDR header;
+	u32 dwBuildQfeSource; // 16
+	u32 dwBuildQfeTarget; // 20
+	u8 abReserved1[0x4]; // 24
+	u32 dwSize7bl; // 28
+	u8 abNonce[0x10]; // 32
+	// union{
+		// struct{
+			BLDR_6BL_PERBOX indirect;
+			// u16 numberOfIndirects;
+			// u16 indirectionArray[223];
+			//u8 abPerBoxOpaque[0x1C0]; // 448 - 48
+			u8 abReserved2[0x2B]; // 43 - 496
+			u8 bUpdateSlot; // 539
+			u8 abCbPairingData[3]; // 540
+			u8 bLdv; // 540
+			u8 abPerBoxDigest[0x10]; // 544
+		// };
+		// u8 abPerBoxData[0x200]; // 512 - 48
+		// u64 aqwPerBoxData[0x40]; // 512 - 48
+	// };
+	XECRYPT_SIG Sig; // 560
+	u8 abNonce7bl[0x10]; // 816
+	u8 abDigest7bl[0x14]; // 832
+	u8 padding[0xc];
+}; // 854+padding
+
+/* ****** for CG ***** */
+typedef struct BLDR_7BL{ // CG
+	BLDR header;
+	u8 abNonce[0x10]; // 16
+	u32 dwSourceImageSize; // 32
+	u8 abSourceDigest[0x14]; // 36
+	u32 dwTargetImageSize; // 56
+	u8 abTargetDigest[0x14]; // 60
+}; // 80
+
+/* ****** ***** ***** */
+
+local u32 temp <hidden=true>;
+temp = ReadShort(0);
+FSeek(0);
+
+if((temp&0xF)==2)
+{
+    BLDR_2BL CbSbBody;
+	u8 body[CbSbBody.header.Size - sizeof(BLDR_2BL)];
+}
+else if((temp&0xF)==3)
+{
+	BLDR_3BL CcBody;
+	u8 body[CcBody.header.Size - sizeof(BLDR_3BL)];
+}
+else if((temp&0xF)==4)
+{
+	BLDR_4BL CdSdBody;
+	u8 body[CdSdBody.header.Size - sizeof(BLDR_4BL)];
+}
+else if((temp&0xF)==5)
+{
+	BLDR_5BL CeSeBody;
+	temp = 0;
+	while(FTell() < (CeSeBody.header.Size-12))
+	{
+		CeLzxEntry ent; // <comment=CompSzCeComment(&ent, temp)>
+		temp = temp+ent.decompSz;
+	}
+	Printf("CE decompressed size: 0x%x bytes\n", temp);
+}
+else if((temp&0xF)==6)
+	BLDR_6BL CfSfBody;
+else if((temp&0xF)==7)
+{
+	BLDR_7BL CgSgBody;
+	while(FTell() < (CgSgBody.header.Size-12))
+		CfPatchEntry ent<comment=CompSzCfComment>;
+}
