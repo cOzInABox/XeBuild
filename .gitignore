@@ -1,0 +1,125 @@
+# ====================================================================
+# Compiled Objects, Libraries, and Executables (GCC / Clang / MSVC)
+# ====================================================================
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.obj
+*.slo
+*.lo
+
+# Precompiled Headers
+*.gch
+*.pch
+*.ipch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.esl
+*.a
+*.lib
+*.la
+*.lai
+
+# Executables and debug formats
+*.out
+*.app
+*.i686
+*.x86_64
+*.hex
+*.elf
+
+# Debug symbols
+*.pdb
+*.ilk
+*.idb
+
+# ====================================================================
+# Visual Studio / MSVC Specific Files
+# ====================================================================
+# User-specific files (Never commit these)
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio cache, build, and diagnostic directories
+.vs/
+Debug/
+Debug_norand/
+Release/
+x64/
+x86/
+ARM/
+ARM64/
+$Intermediate/
+GeneratedFiles/
+ipch/
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+
+# MSBuild / Visual Studio temporary files
+*.aps
+*.ncb
+*.opendb
+*.sdf
+*.tlb
+*.tlh
+*.baz
+*.csproject.user
+*.userprefs
+*.udb
+*.VC.db
+
+# Visual Studio Profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# ====================================================================
+# Build Systems
+# ====================================================================
+# CMake build directories
+/build/
+/out/
+
+# ====================================================================
+# Operating System & IDE (Optional but Recommended)
+# ====================================================================
+# Windows thumbnail caches
+Thumbs.db
+ehthumbs.db
+
+# macOS files
+.DS_Store
+
+# VS Code directory (if using VS Code alongside GCC/Clang)
+.vscode/
+
+# Just in case...
+.svn/
+
+# some leftover junk dirs
+patches/*/base/
+patches/*/opt/
+patches/*/out/
+patches/*/test/
+
+# extra stuff
+build.log
+*.rar
+*.zip
+*.7z
+xebuild.exe
+_build/xebuild.exe
+/build-x64-windows-gcc-release
+/cbuild
+/testing
