@@ -1,5 +1,11 @@
 # xeBuild
 
+Note: not the _full_ source _yet_, cleaning up embarassingly bad code is proving to take more time than I can throw at it unlike I used to. Bear with me for a bit!
+
+cz ~ Sept 7 2026.
+
+---
+
 Welcome to the official source code for the core engine and resources of **xeBuild**, a NAND re/construction tool for the Xbox 360 platform.
 
 This codebase has been built, reverse-engineered, iterated upon, and maintained since 2010. It is being released to the public domain for the purposes of digital preservation, historical documentation, and to allow the homebrew community to address any long-standing bugs.
